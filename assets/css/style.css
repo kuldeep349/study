@@ -1,8 +1,8 @@
 :root {
-    --main-color: #05a0e6;
+    --main-color: #79bc49; 
     --light-color: #f5f5f5;
     --light-border: #ddd;
-    --black-color: #282828;
+    --black-color: #282828; 
 }
 body{
     background: #fff;
@@ -30,7 +30,7 @@ a:hover, a:focus{
     background: var(--main-color);
     padding: 10px 20px 8px;
 	  font-weight: 700;
-	  text-transform: uppercase;
+	  text-transform: uppercase;    
 }
 
 /*------Top bar------*/
@@ -51,9 +51,20 @@ a:hover, a:focus{
 /*-------- Main Menu Css Start ---------*/
 .register_btn{
     background-color: var(--main-color);
-    padding: 5px 25px;
+    padding: 7px 30px;
     border: none;
     font-size: 17px;
+	text-transform: uppercase;
+	font-weight: 600;
+}
+.cancel_btn{
+    background-color: transparent;
+    padding: 7px 30px;
+    border: none;
+    font-size: 17px;
+	text-transform: uppercase;
+	font-weight: 600;
+	border:1px solid var(--light-border);
 }
 .custom_menu{
     padding: 0px 0px;
@@ -95,7 +106,12 @@ a:hover, a:focus{
     outline: none;
     background-color: var(--light-color);
 }
-
+.register_form .form-control{
+	height:44px;
+}
+.register_form .form-group{
+	margin-bottom:8px;
+}
 /*-------- Video Css Start --------*/
 .category_img img{
 	transition:.5s;
@@ -166,7 +182,7 @@ a:hover, a:focus{
     background-color: var(--main-color);
 }
 .owl-item:nth-child(odd) .product_icon {
-    background: red;
+    background: #05a0e6;
 }
 .owl-item:nth-child(even) .product_icon {
     background-color: var(--main-color);
@@ -251,6 +267,10 @@ a:hover, a:focus{
     margin: 0;
     z-index: 2;
     color: var(--light-color);
+	text-transform:uppercase;
+}
+.pagesub_heading h1{
+	font-weight:700;
 }
 .page_heading:after {
   content:"";
@@ -260,7 +280,7 @@ a:hover, a:focus{
   bottom:0;
   left:0;
   right:0;
-  background:rgba(0,0,0,0.5);
+  background:rgba(0,0,0,0.7);
   z-index: 1;
 }
 .side_tabbar .nav-tabs .nav-link {
@@ -268,6 +288,7 @@ a:hover, a:focus{
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
     background: var(--light-color);
+	position:relative;
 }
 
 .side_tabbar .nav-tabs .nav-link.active {
@@ -275,6 +296,17 @@ a:hover, a:focus{
     background-color:var(--light-border) !important;
 	border-left: 5px solid var(--main-color);
 }
+/*.side_tabbar .nav-tabs .nav-link.active:after {
+	content:"";
+	position:absolute;
+	right:-10px;
+	width:20px;
+	height:20px;
+	background:var(--light-border);
+	transform: rotate(45deg);
+	z-index: -1;
+	top: 11px;
+}*/
 .side_tabbar .nav-tabs .nav-link {
     border: 1px solid transparent;
     border-top-left-radius: 0rem!important;
@@ -289,7 +321,8 @@ a:hover, a:focus{
     color: var(--main-color);
 }
 .side_tabbar .nav-tabs .nav-link:hover{
-    margin-left: 4px;
+    border-left: 5px solid var(--main-color);
+	background-color:var(--light-border) !important;
 }
 .side_tabbar .tab-content>.active {
     display: block;
@@ -305,7 +338,7 @@ a:hover, a:focus{
 }
 .side_tabbar .nav-tabs .nav-item {
     margin-bottom: 0px;
-    border-bottom: 1px solid var(--light-border);
+    border-bottom: 1px dotted var(--light-border);
 }
 .side_tabbar .nav-tabs .nav-item:last-child {
     margin-bottom: 0px;
@@ -343,7 +376,7 @@ a:hover, a:focus{
     margin-left: 4px;
 }*/
 .side_barheading{
-
+   
 }
 .side_barheading h6{
 	margin-bottom:0px;
@@ -353,27 +386,41 @@ a:hover, a:focus{
     margin-bottom: 0px;
     font-size: 17px;
 	background: var(--main-color);
+	text-transform: uppercase;
+}
+.side_barheading h6:after {
+	content:"";
+	position:absolute;
+	right:0px;
+	width:31px;
+	height:32px;
+	background:var(--main-color);
+	transform: rotate(45deg);
+	z-index: -1;
+	top: 6px;
 }
 .filter_bar{
-    background: var(--main-color);
+    background: var(--light-border);
     width: 100%;
     display: inline-block;
+	margin-bottom:15px;
 }
 .filter_bar a{
     display: block;
-    border-bottom: 1px solid var(--light-border);
+    border-bottom: 1px dotted var(--light-color);
     transition: .6s;
     padding: 8px 4px 8px 11px;
-    color: var(--light-color);
+    color: var(--black-color);
     margin-bottom: 0px;
     font-size: 17px;
+	text-transform: uppercase;
 }
 .filter_bar a:last-child{
     border-bottom: none;
 }
 .filter_bar i{
     font-size: 11px;
-    color: var(--light-color);
+    color: var(--main-color);
 }
 .filter_bar a:hover{
     margin-left: 4px;
@@ -383,6 +430,8 @@ a:hover, a:focus{
     margin-bottom: 10px;
     border:1px solid var(--light-border);
     padding: 10px 10px;
+	box-shadow: 0px 0px 7px 0px var(--light-border);
+	background-image: linear-gradient(to bottom right, #78b5df, #3b9ddf);
 }
 .subject_icon {
     width: 60px;
@@ -411,6 +460,7 @@ a:hover, a:focus{
     color: #fff !important;
     float: right;
     margin-right: 10px;
+	display:none;
 }
 
 /*---------- Footer Section Css start -----------*/
@@ -422,7 +472,7 @@ a:hover, a:focus{
     border-right: 1px solid var(--light-border);
 }
 .footer_bg h5{
-    color: var(--black-color);
+    color: var(--black-color); 
     display: block;
     margin: 0px 0px 20px;
 }
@@ -436,7 +486,7 @@ a:hover, a:focus{
     left: 17px;
 }
 .footer_link a{
-    color: var(--black-color);
+    color: var(--black-color); 
     display: block;
     margin: 10px 0px;
     font-size: 15px;
@@ -455,7 +505,7 @@ a:hover, a:focus{
     color: var(--main-color);
 }
 .footer_contactlink a{
-    color: var(--black-color);
+    color: var(--black-color); 
     display: block;
     margin: 10px 0px;
     font-size: 15px;
@@ -468,7 +518,7 @@ a:hover, a:focus{
     background: var(--light-color);
     padding: 0px 0px 5px;
     text-align:center;
-
+  
 }
 .copy_right p{
     border-top:1px solid var(--light-border);

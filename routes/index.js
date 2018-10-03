@@ -42,7 +42,18 @@ app.get('/reb/subject-wise', function(req, res, next) {
         data: 'this is site index'
     })
 })
-
+app.get('/reb/board-material', function(req, res, next) {
+    res.render('site/board-material', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+app.get('/reb/entranc-exam', function(req, res, next) {
+    res.render('site/entranc-exam', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
 
 /**
  * We assign app object to module.exports
