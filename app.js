@@ -129,7 +129,7 @@ app.use('/reb/subject',sbj)
 app.use('/reb/exam',exm)
 app.use('/reb/teacher',tcr)
 app.use('/reb/home',home)
-app.use('/reb/site',site)
+app.use('/site',site)
 
 app.use(express.static(path.join(__dirname, 'assets')));
 

@@ -24,44 +24,50 @@ var app = express()
 //
 // })
 
-app.get('/reb', function(req, res, next) {
+app.get('/', function(req, res, next) {
     res.render('index', {
         title: 'Class List',
         data: ''
     })
 })
-app.get('/reb/class-wise', function(req, res, next) {
+app.get('/class-wise', function(req, res, next) {
     res.render('site/class-wise', {
         title: 'Class List',
         data: 'this is site index'
     })
 })
-app.get('/reb/subject-wise', function(req, res, next) {
+app.get('/subject-wise', function(req, res, next) {
     res.render('site/subject-wise', {
         title: 'Class List',
         data: 'this is site index'
     })
 })
-app.get('/reb/board-material', function(req, res, next) {
+app.get('/board-material', function(req, res, next) {
     res.render('site/board-material', {
         title: 'Class List',
         data: 'this is site index'
     })
 })
-app.get('/reb/entranc-exam', function(req, res, next) {
+app.get('/entranc-exam', function(req, res, next) {
     res.render('site/entranc-exam', {
         title: 'Class List',
         data: 'this is site index'
     })
 })
 
-app.get('/reb/career-guidance', function(req, res, next) {
+app.get('/career-guidance', function(req, res, next) {
     res.render('site/career-guidance', {
         title: 'Class List',
         data: 'this is site index'
     })
 })
 
+app.get('/cbse-board', function(req, res, next) {
+    res.render('site/cbse-board', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
 // app.get('/career-guidance', function(req, res, next) {
 //     res.render('site/career-guidance', {
 //         title: 'Class List',
@@ -71,7 +77,7 @@ app.get('/reb/career-guidance', function(req, res, next) {
 
 
 
-app.get('/reb/subject-topic', function(req, res, next) {
+app.get('/subject-topic', function(req, res, next) {
     res.render('site/subject-topic', {
         title: 'Class List',
         data: 'this is site index'

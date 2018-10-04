@@ -9,30 +9,27 @@ app.get('/', function(req, res, next) {
     })
 })
 
-app.get('/class-wise', function(req, res, next) {
+app.get('class-wise', function(req, res, next) {
     res.render('site/class-wise', {
         title: 'Class List',
         data: 'this is site index'
     })
 })
 
-app.get('/subject-wise', function(req, res, next) {
+app.get('subject-wise', function(req, res, next) {
     res.render('site/subject-wise', {
         title: 'Class List',
         data: 'this is site index'
     })
 })
-app.get('/board-material', function(req, res, next) {
+app.get('board-material', function(req, res, next) {
     res.render('site/board-material', {
         title: 'Class List',
         data: 'this is site index'
     })
 })
 
-app.get('/career-guidance', function(req, res, next) {
-    res.render('site/career-guidance', {
-        title: 'Class List',
-        data: 'this is site index'
-    })
-})
+
+
+
 module.exports = app
