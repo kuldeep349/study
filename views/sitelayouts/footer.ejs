@@ -5,7 +5,7 @@
        <div class="row">
           <div class="col-lg-5 col-sm-12">
             <div class="footer_link">
-              <img src="images/Home-Education_Logo.png" alt="">
+              <img src="../images/site-logo.PNG" alt="" width="130">
               <p class="mt-3 mb-1 pr-3">Lorem Ipsum is simply dummy text of the printing and typesetting industry. printing and typesetting Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
               <p class="pr-3">Lorem Ipsum has been the industry's standard dummy text. printing and typesetting.</p>
             </div>
@@ -136,5 +136,43 @@
 			});
 		});
 	</script>
+    <script>
+    jQuery.fn.liScroll = function(settings) {
+    settings = jQuery.extend({
+    travelocity: 0.03
+    }, settings);   
+    return this.each(function(){
+        var $strip = jQuery(this);
+        $strip.addClass("newsticker")
+        var stripHeight = 1;
+        $strip.find("li").each(function(i){
+          stripHeight += jQuery(this, i).outerHeight(true); // thanks to Michael Haszprunar and Fabien Volpi
+        });
+        var $mask = $strip.wrap("<div class='mask'></div>");
+        var $tickercontainer = $strip.parent().wrap("<div class='tickercontainer'></div>");               
+        var containerHeight = $strip.parent().parent().height();  //a.k.a. 'mask' width   
+        $strip.height(stripHeight);     
+        var totalTravel = stripHeight;
+        var defTiming = totalTravel/settings.travelocity; // thanks to Scott Waye   
+        function scrollnews(spazio, tempo){
+        $strip.animate({top: '-='+ spazio}, tempo, "linear", function(){$strip.css("top", containerHeight); scrollnews(totalTravel, defTiming);});
+        }
+        scrollnews(totalTravel, defTiming);       
+        $strip.hover(function(){
+        jQuery(this).stop();
+        },
+        function(){
+        var offset = jQuery(this).offset();
+        var residualSpace = offset.top + stripHeight;
+        var residualTime = residualSpace/settings.travelocity;
+        scrollnews(residualSpace, residualTime);
+        });     
+      }); 
+    };
+
+    $(function(){
+      $("ul#ticker01").liScroll();
+    });
+  </script>
   </body>
 </html>

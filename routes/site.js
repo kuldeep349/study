@@ -28,4 +28,11 @@ app.get('/board-material', function(req, res, next) {
         data: 'this is site index'
     })
 })
+
+app.get('/career-guidance', function(req, res, next) {
+    res.render('site/career-guidance', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
 module.exports = app

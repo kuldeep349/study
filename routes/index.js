@@ -55,6 +55,29 @@ app.get('/reb/entranc-exam', function(req, res, next) {
     })
 })
 
+app.get('/reb/career-guidance', function(req, res, next) {
+    res.render('site/career-guidance', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
+// app.get('/career-guidance', function(req, res, next) {
+//     res.render('site/career-guidance', {
+//         title: 'Class List',
+//         data: 'this is site index'
+//     })
+// })
+
+
+
+app.get('/reb/subject-topic', function(req, res, next) {
+    res.render('site/subject-topic', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
 /**
  * We assign app object to module.exports
  *
