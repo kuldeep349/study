@@ -160,7 +160,7 @@ app.get('/admin/dashboard', function(req, res, next) {
     })
 })
 
-app.get('/admin/dashboard/add-book', function(req, res, next) {
+app.get('dashboard/', function(req, res, next) {
     res.render('admin/dashboard/add-book', {
         title: 'Class List',
         data: 'this is site index'
