@@ -62,6 +62,52 @@ app.get('/career-guidance', function(req, res, next) {
     })
 })
 
+app.get('/blog-discussion', function(req, res, next) {
+    res.render('site/blog-discussion', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
+app.get('/blog_subjectwise', function(req, res, next) {
+    res.render('site/blog_subjectwise', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
+app.get('/blog_subject_topic', function(req, res, next) {
+    res.render('site/blog_subject_topic', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
+app.get('/text_urself', function(req, res, next) {
+    res.render('site/text_urself', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
+app.get('/entrance_exam', function(req, res, next) {
+    res.render('site/entrance_exam', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
+app.get('/engineering_entrancexam', function(req, res, next) {
+    res.render('site/engineering_entrancexam', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
+
+
+
+
 app.get('/cbse-board', function(req, res, next) {
     res.render('site/cbse-board', {
         title: 'Class List',
