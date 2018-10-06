@@ -68,12 +68,27 @@ app.get('/cbse-board', function(req, res, next) {
         data: 'this is site index'
     })
 })
-// app.get('/career-guidance', function(req, res, next) {
-//     res.render('site/career-guidance', {
-//         title: 'Class List',
-//         data: 'this is site index'
-//     })
-// })
+
+app.get('/career_after10', function(req, res, next) {
+    res.render('site/career_after10', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
+
+app.get('/subject_subcategory', function(req, res, next) {
+    res.render('site/subject_subcategory', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+app.get('/subject_topic', function(req, res, next) {
+    res.render('site/subject_topic', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
 
 
 
@@ -84,6 +99,34 @@ app.get('/subject-topic', function(req, res, next) {
     })
 })
 
+
+app.get('/admin/', function(req, res, next) {
+    res.render('admin/index', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
+app.get('/admin/dashboard', function(req, res, next) {
+    res.render('admin/dashboard/index', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
+app.get('/admin/dashboard/add-book', function(req, res, next) {
+    res.render('admin/dashboard/add-book', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
+// app.get('/admin/', function(req, res, next) {
+//     res.render('admin/index', {
+//         title: 'Class List',
+//         data: 'this is site index'
+//     })
+// })
 /**
  * We assign app object to module.exports
  *

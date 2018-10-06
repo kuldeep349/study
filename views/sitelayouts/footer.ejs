@@ -174,5 +174,13 @@
       $("ul#ticker01").liScroll();
     });
   </script>
+  <script type="text/javascript">
+          $(document).ready(function () {
+        $('.arrow_change').click(function(){
+            icon = $(this).find("i");
+            icon.toggleClass("fas fa-angle-down fas fa-angle-right") 
+        })
+          });
+      </script>
   </body>
 </html>

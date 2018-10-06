@@ -51,6 +51,7 @@ var exm=require('./routes/exam')
 var tcr=require('./routes/teacher')
 var home=require('./routes/home')
 var site=require('./routes/site')
+var admin=require('./routes/admin')
 // for front end
 /*app.get('/', function(req, res){
     res.render('index',{user:"John Smith"})
@@ -130,6 +131,9 @@ app.use('/reb/exam',exm)
 app.use('/reb/teacher',tcr)
 app.use('/reb/home',home)
 app.use('/site',site)
+app.use('/admin',admin)
+
+
 
 app.use(express.static(path.join(__dirname, 'assets')));
 

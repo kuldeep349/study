@@ -590,6 +590,59 @@ a:hover, a:focus{
 	margin-bottom:5px;
 }
 
+/*.accordion .card-header:after {
+    font-family: 'FontAwesome';  
+    content: "\f068";
+    float: right; 
+}
+.accordion .card-header.collapsed:after {
+    content: "\f067"; 
+}*/
+.custom_accordion .card-header {
+
+    padding: 10px 15px;
+    background-color: #ccc;
+    border-bottom: 1px dotted var(--main-color);
+	border-radius: 0px;
+
+}
+.custom_accordion .card-header i{
+	float:right;
+	margin-top:5px;
+	color:var(--main-color);
+}
+.custom_accordion .card-title{
+	font-size:17px;
+}
+.tab_border{
+	border:1px solid var(--light-border);
+}
+.institute_name{
+	background:var(--light-color);
+	padding:5px 5px 10px;
+}
+.institute_name a{
+	font-size:14px;
+}
+
+.more_links{
+	background:var(--light-color);
+	padding:5px 5px 25px;
+}
+.more_links a{
+	font-size:14px;
+	display:inline-block;
+	padding:8px 20px;
+	color:var(--black-color);
+}
+.more_view{
+	margin-top:-12px;
+}
+.more_links a:hover{
+	color:#007bff;
+}
+
+
 /*-------- Responsive Css Start ---------*/
 @media only screen and (min-width: 992px) {
 	.custom_menu .dropdown:hover>.dropdown-menu {
