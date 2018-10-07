@@ -1,8 +1,46 @@
 var express = require('express')
 var app = express()
 var str_replace = require('str_replace');
+session = require('express-session');
+app.use(session({
+    secret: '2C44-4D44-WppQ38S',
+    resave: true,
+    saveUninitialized: true
+}));
 
-app.get('/categories', function(req, res, next){
+var auth = function(req, res, next) {
+  console.log(req.session)
+  if (req.session && req.session.user === "kush" && req.session.admin)
+    return next();
+  else
+      res.redirect('/admin/');
+};
+// Login endpoint
+app.get('/login', function (req, res) {
+  if (!req.query.username || !req.query.password) {
+    req.flash('error','Wrong Username or Password')
+      res.redirect('/admin');
+  } else if(req.query.username === "kush" || req.query.password === "welcome") {
+    req.session.user = "kush";
+    req.session.admin = true;
+      res.redirect('/admin/categories');
+    //res.send("login success!");
+  }else{
+      req.flash('error','Wrong Username or Password')
+      res.redirect('/admin');
+  }
+});
+// Logout endpoint
+app.get('/logout', function (req, res) {
+  req.session.destroy();
+    res.redirect('/');
+});
+
+// Get content endpoint
+app.get('/content', auth, function (req, res) {
+    res.send("You can only see this after you've logged in.");
+});
+app.get('/categories', auth, function(req, res, next){
     req.getConnection(function(error, conn) {
       conn.query('SELECT * FROM tbl_categories ORDER BY id DESC',function(err, rows, fields) {
           if (err) {
@@ -22,7 +60,7 @@ app.get('/categories', function(req, res, next){
   })
 
 })
-app.get('/remove_category/', function(req, res, next){
+app.get('/remove_category/', auth, function(req, res, next){
     req.getConnection(function(error, conn) {
     conn.query('delete FROM tbl_categories where id = '+req.query.id,function(err, rows, fields) {
       if (err) {
@@ -36,7 +74,7 @@ app.get('/remove_category/', function(req, res, next){
 })
 
 })
-app.get('/add-category', function(req, res, next){
+app.get('/add-category', auth, function(req, res, next){
   req.getConnection(function(error, conn) {
       conn.query('SELECT * FROM tbl_categories ORDER BY id DESC',function(err, rows, fields) {
           if (err) {
@@ -57,7 +95,7 @@ app.get('/add-category', function(req, res, next){
 
 })
 
-app.post('/add-category', function(req, res, next){
+app.post('/add-category', auth, function(req, res, next){
   req.assert('category_name','Class Name is required').notEmpty()         //Validate class name
   var errors = req.validationErrors()
   if( !errors ) {
