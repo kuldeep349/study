@@ -9,7 +9,7 @@ app.use(session({
 }));
 
 var auth = function(req, res, next) {
-  console.log(req.session)
+  //console.log(req.session)
   if (req.session && req.session.user === "kush" && req.session.admin)
     return next();
   else
@@ -230,7 +230,26 @@ app.get('/add-content', function(req, res, next){
       })
   })
 })
-
+// function to add sub category
+app.get('/add_sub_category', function(req, res, next){
+  req.getConnection(function(error, conn) {
+      conn.query('SELECT id,name FROM tbl_categories ORDER BY id DESC',function(err, rows, fields) {
+          if (err) {
+              req.flash('error', err)
+              res.render('admin/category/sub_category', {
+                  title: 'Class List',
+                  data: ''
+              })
+          } else {
+              // render to views/user/list.ejs template file
+              res.render('admin/category/sub_category', {
+                  title: 'Class List',
+                  data: rows
+              })
+          }
+      })
+  })
+})
 /*to get sub categories*/
 app.get('/get_subcategories/',  function(req, res, next){
     req.getConnection(function(error, conn) {
@@ -258,5 +277,118 @@ app.get('/get_content/',  function(req, res, next){
         res.end(JSON.stringify(rows));
     })
   })
+})
+/* to add new sub categories*/
+app.post('/sub-category',  function(req, res, next){
+  req.assert('name','Class Name is required').notEmpty()
+  req.assert('category_id','category id  is required').notEmpty()     //Validate class name
+  var errors = req.validationErrors()
+  if( !errors ) {
+    var name = req.sanitize('name').escape().trim();
+    var category_id = req.sanitize('category_id').escape().trim();
+    var cl = {
+        name: name,
+        slug: str_replace(' ' , '_' , name),
+        category_id:category_id
+      }
+      req.getConnection(function(error, conn) {
+        var q = 'INSERT INTO tbl_sub_categories SET name = "'+cl.name+'" , slug = "'+cl.slug+'" , category_id = "'+cl.category_id+'"';
+          conn.query(q, function(err, result) {
+              if (err) {
+                  req.flash('error', err)
+                    res.redirect('/admin/add_sub_category');
+              } else {
+                  req.flash('success', 'New Category added successfully!')
+                  res.redirect('/admin/add_sub_category');
+              }
+          })
+      })
+  }
+  else {   //Display errors to user
+      var error_msg = ''
+      errors.forEach(function(error) {
+          error_msg += error.msg + '<br>'
+      })
+      req.flash('error', error_msg)
+
+      /**
+       * Using req.body.name
+       * because req.param('name') is deprecated
+       */
+      res.render('classes/addclass', {
+          title: 'Add New Class',
+          class_id: req.body.class_id,
+          class_name: req.body.class_name,
+      })
+  }
+
+})
+
+// function to add nano category
+app.get('/add_nano_category', function(req, res, next){
+  req.getConnection(function(error, conn) {
+      conn.query('SELECT id,name FROM tbl_categories ORDER BY id DESC',function(err, rows, fields) {
+          if (err) {
+              req.flash('error', err)
+              res.render('admin/category/nano_categories', {
+                  title: 'Class List',
+                  data: ''
+              })
+          } else {
+              // render to views/user/list.ejs template file
+              res.render('admin/category/nano_categories', {
+                  title: 'Class List',
+                  data: rows
+              })
+          }
+      })
+  })
+})
+
+/* to add new nano categories*/
+app.post('/add-nano-category',  function(req, res, next){
+  req.assert('name','Class Name is required').notEmpty()
+  req.assert('sub_category_id','category id  is required').notEmpty()     //Validate class name
+  var errors = req.validationErrors()
+  if( !errors ) {
+    var name = req.sanitize('name').escape().trim();
+    var category_id = req.sanitize('sub_category_id').escape().trim();
+    var cl = {
+        name: name,
+        slug: str_replace(' ' , '_' , name),
+        category_id:category_id
+      }
+      req.getConnection(function(error, conn) {
+        var q = 'INSERT INTO tbl_nano_category SET name = "'+cl.name+'" , slug = "'+cl.slug+'" , sub_category_id = "'+cl.category_id+'"';
+          conn.query(q, function(err, result) {
+              if (err) {
+                  req.flash('error', err)
+                  console.log(err)
+                    res.redirect('/admin/add_nano_category');
+              } else {
+                  req.flash('success', 'New Category added successfully!')
+                  res.redirect('/admin/add_nano_category');
+              }
+          })
+      })
+  }
+  else {   //Display errors to user
+      var error_msg = ''
+      errors.forEach(function(error) {
+          error_msg += error.msg + '<br>'
+      })
+      req.flash('error', error_msg)
+
+      /**
+       * Using req.body.name
+       * because req.param('name') is deprecated
+       */
+      res.render('classes/addclass', {
+          title: 'Add New Class',
+          class_id: req.body.class_id,
+          class_name: req.body.class_name,
+      })
+  }
+
 })
 module.exports = app
