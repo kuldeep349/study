@@ -1,0 +1,132 @@
+<%- include ../../adminlayouts/header.ejs %>
+
+<script src="https://cdn.ckeditor.com/4.10.0/standard-all/ckeditor.js"></script>
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+          Content Management
+        </h1>
+    </section>
+    <div class="row">
+        <div class="col-md-8">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Add Content</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form id="contentForm" action="/admin/add-content" method="post">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Content Title</label>
+                  <input type="text" name="title" class="form-control" required placeholder="Enter Content Title">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Choose Category</label>
+                  <select class="form-control" name="category_id">
+                    <option disabled selected><--choose--></option>
+                  <% if (locals.data) {
+                    %>
+                  <% locals.data.forEach(function(cat){
+                    %>
+                      <option value="<%= cat.id %>"><%= cat.name %></option>
+                    <% }) %>
+                    <% } %>
+                  <select>
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Choose Sub Category</label>
+                  <select class="form-control" name="sub_category_id">
+                  <select>
+                </div>
+                <div class="form-group">
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Choose Nano Category</label>
+                    <select class="form-control" name="nano_category_id">
+                    <select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Content</label>
+                    <textarea class="form-control" name="content" id="editor1">
+                    </textarea>
+                  </div>
+                </div>
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+    </div>
+</div>
+
+
+<%- include ../../adminlayouts/footer.ejs %>
+
+<script>
+
+       CKEDITOR.replace( 'editor1', {
+			extraPlugins: 'mathjax',
+			mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
+			height: 320
+		} );
+
+		if ( CKEDITOR.env.ie && CKEDITOR.env.version == 8 ) {
+			document.getElementById( 'ie8-warning' ).className = 'tip alert';
+		}
+    content = document.getElementById("editor1");
+console.log(content);
+// document.querySelector("#check").addEventListener("click",function(event){
+//     var data = CKEDITOR.instances.editor1.getData();
+//     myFunction(data);
+//     console.log(data);
+// function myFunction(data){
+//            document.getElementById("editor1").value = content;
+//            document.getElementById("myForm").submit();
+//         }
+// },false);
+
+$(document).on('change','#contentForm select[name=category_id]',function(){
+  var html = '<option  disabled selected><--choose--></option>';
+  $.get('/admin/get_subcategories/?id='+$(this).val(),function(res){
+    $.each(res,function(key,val){
+    html += '<option value="'+val.id+'">'+val.name+'</option>';
+    })
+    $('#contentForm select[name=sub_category_id]').html(html)
+  },'json')
+});
+$(document).on('change','#contentForm select[name=sub_category_id]',function(){
+  var html = '<option disabled selected><--choose--></option>';
+  $.get('/admin/get_nanocategories/?id='+$(this).val(),function(res){
+    $.each(res,function(key,val){
+      html += '<option value="'+val.id+'">'+val.name+'</option>';
+    })
+    $('#contentForm select[name=nano_category_id]').html(html)
+  },'json')
+});
+
+$(document).on('submit','#contentForm',function(e){
+  e.preventDefault()
+  console.log($(this).serialize())
+  var data = CKEDITOR.instances.editor1.getData();
+  //myFunction(data);
+  var formData = {
+      title: $('#contentForm input[name=title]').val(),
+      nano_category_id: $('#contentForm select[name=nano_category_id]').val(),
+      content: data,
+      file:''
+  }
+  console.log(formData);
+  $.post($(this).attr('action'),formData,function(res){
+    alert(res.message)
+    if(res.success == 1){
+      location.reload()
+    }
+  },'json')
+})
+</script>

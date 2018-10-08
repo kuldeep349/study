@@ -36,6 +36,7 @@ app.get('/logout', function (req, res) {
     res.redirect('/');
 });
 
+
 // Get content endpoint
 app.get('/content', auth, function (req, res) {
     res.send("You can only see this after you've logged in.");
@@ -68,7 +69,7 @@ app.get('/remove_category/', auth, function(req, res, next){
           res.redirect('../../admin/add-category');
       } else {
           req.flash('success', 'Category Deleted successfully!')
-          res.redirect('admin/category/add-category');
+          res.redirect('/admin/add-category');
       }
     })
 })
@@ -102,7 +103,8 @@ app.post('/add-category', auth, function(req, res, next){
     var name = req.sanitize('category_name').escape().trim();
     var cl = {
         name: name,
-        slug: str_replace(' ' , '_' , name)
+        slug: str_replace(' ' , '_' , name),
+        image:''
       }
       req.getConnection(function(error, conn) {
           conn.query('INSERT INTO tbl_categories SET ?', cl, function(err, result) {
@@ -139,5 +141,122 @@ app.post('/add-category', auth, function(req, res, next){
 
 })
 
+// code  for content managment By Kush
+app.get('/content-list',  function(req, res, next){
+  req.getConnection(function(error, conn) {
+      conn.query('SELECT * FROM tbl_content ORDER BY id DESC',function(err, rows, fields) {
+          if (err) {
+              req.flash('error', err)
+              res.render('admin/content/content_list', {
+                  title: 'Class List',
+                  data: ''
+              })
+          } else {
+              // render to views/user/list.ejs template file
+              res.render('admin/content/content_list', {
+                  title: 'Class List',
+                  data: rows
+              })
+          }
+      })
+  })
+})
+/*to add post content */
+app.post('/add-content', function(req, res, next){
 
+  req.assert('title','title id is required').notEmpty()           //Validate id
+  req.assert('content','content is required').notEmpty()         //Validate class name
+  var errors = req.validationErrors()
+  var success,message;
+  var response = [];
+
+  // res.writeHead(200, {'Content-Type': 'application/json'});
+  // res.end(JSON.stringify(response));
+  if( !errors ) {
+    var content = {
+        title: req.sanitize('title').escape().trim(),
+        nano_category_id: req.sanitize('nano_category_id').escape().trim(),
+        description:req.sanitize('content'),
+        file:''
+    }
+    req.getConnection(function(error, conn) {
+      conn.query('INSERT INTO tbl_content SET ?', content, function(err, result) {
+        if (err) {
+          response = {
+            success :  0,
+            message:'error while inserting record'
+          }
+        }else{
+          response = {
+            success :  1,
+            message:'Content Added successfully'
+          }
+        }
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(JSON.stringify(response));
+      })
+    })
+  }
+  else{
+      var error_msg = ''
+      errors.forEach(function(error) {
+          error_msg += error.msg + '<br>'
+      })
+      response = {
+        success :  0,
+        message:error_msg
+      }
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(response));
+  }
+
+
+})
+
+app.get('/add-content', function(req, res, next){
+  req.getConnection(function(error, conn) {
+      conn.query('SELECT * FROM tbl_categories ORDER BY id DESC',function(err, rows, fields) {
+        if(rows){
+          res.render('admin/content/add-content', {
+              title: 'Class List',
+              data: rows
+          })
+        }else{
+          res.render('admin/content/add-content', {
+              title: 'Class List',
+              data: ''
+          })
+        }
+      })
+  })
+})
+
+/*to get sub categories*/
+app.get('/get_subcategories/',  function(req, res, next){
+    req.getConnection(function(error, conn) {
+    conn.query('select id,name FROM tbl_sub_categories where category_id = '+req.query.id,function(err, rows, fields) {
+      res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(JSON.stringify(rows));
+    })
+  })
+})
+/*to get nano categories*/
+app.get('/get_nanocategories/',  function(req, res, next){
+    req.getConnection(function(error, conn) {
+    conn.query('select id,name FROM tbl_nano_category where sub_category_id = '+req.query.id,function(err, rows, fields) {
+      res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(JSON.stringify(rows));
+    })
+  })
+})
+/*to get contents*/
+app.get('/get_content/',  function(req, res, next){
+    req.getConnection(function(error, conn) {
+      var query ="SELECT tbl_content.id , tbl_content.type ,tbl_content.title ,tbl_content.description ,tbl_content.created_at , tbl_nano_category.name as nano_category ,tbl_sub_categories.name as sub_category ,tbl_categories.name as category from tbl_content INNER JOIN tbl_nano_category on tbl_content.nano_category_id = tbl_nano_category.id INNER JOIN tbl_sub_categories on tbl_nano_category.sub_category_id = tbl_sub_categories.id INNER JOIN tbl_categories on tbl_sub_categories.category_id = tbl_categories.id";
+    conn.query(query,function(err, rows, fields) {
+      res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(JSON.stringify(rows));
+    })
+  })
+})
 module.exports = app

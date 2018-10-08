@@ -26,6 +26,7 @@
     "method-override": "^2.3.10",
     "mysql": "^2.15.0",
     "popper.js": "^1.14.3",
+    "sanitize-html": "^1.19.1",
     "str_replace": "^0.1.6"
   },
   "devDependencies": {

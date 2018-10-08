@@ -25,10 +25,28 @@ var app = express()
 // })
 
 app.get('/', function(req, res, next) {
-    res.render('index', {
-        title: 'Class List',
-        data: ''
+    req.getConnection(function(error, conn) {
+      conn.query('SELECT id,name FROM tbl_categories ',function(err, rows, fields) {
+        var categories = rows;
+        for (x in rows) {
+          categories[x].sub = {};
+          //categories[x].sub = [x , 'a', 'b']
+            conn.query('SELECT id,name FROM tbl_sub_categories where category_id =  '+ categories[x].id,function(err, srows, fields) {
+            if(rows.length){
+                categories[x].sub = rows;
+                console.log(srows.length + ' array length')
+            }else{
+              categories[x].sub = [x , 1 ,2]
+            }
+            })
+        }
+        console.log(categories)
+        res.render('index', {
+            title: 'Class List',
+            data: categories
+        })
     })
+  })
 })
 app.get('/class-wise', function(req, res, next) {
     res.render('site/class-wise', {
@@ -167,12 +185,6 @@ app.get('dashboard/', function(req, res, next) {
     })
 })
 
-// app.get('/admin/', function(req, res, next) {
-//     res.render('admin/index', {
-//         title: 'Class List',
-//         data: 'this is site index'
-//     })
-// })
 /**
  * We assign app object to module.exports
  *

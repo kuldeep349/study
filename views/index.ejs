@@ -13,7 +13,82 @@
         </div>
       </div>
     </div>
-
+    <% if (locals.data) {
+        %>
+    <% locals.data.forEach(function(cat){
+         %>
+         <div class="container-fluid my-4">
+           <div class="row">
+             <div class="col-md-5 col-lg-3 col-sm-5 d-none d-sm-block category_img">
+               <a href="/site/categories/<%= cat.id %>"><img class="img-fluid" src="../images/2.jpg" alt=""></a>
+             </div>
+             <div class="col-md-7 col-lg-9 col-sm-7">
+             <div class="main_title">
+               <a href="/site/categories/<%= cat.id %>"><%= cat.name %></a>
+             </div>
+             <div id="owl-demo" class="text-center">
+               <div class="item">
+                 <div class="section_box">
+                   <a href="/site/categories/<%= cat.id %>"><div class="product_icon">
+                   <i class="fas fa-user-graduate"></i>
+                   </div><br>
+                   <h5>Physics</h5></a>
+                 </div>
+               </div>
+               <div class="item">
+                 <div class="section_box">
+                   <a href="/site/categories/<%= cat.id %>"><div class="product_icon">
+                   <i class="fas fa-at"></i>
+                   </div><br>
+                   <h5>Chemistry</h5></a>
+                 </div>
+               </div>
+               <div class="item">
+                 <div class="section_box">
+                   <a href="/site/categories/<%= cat.id %>"><div class="product_icon">
+                   <i class="fas fa-at"></i>
+                   </div><br>
+                   <h5>Mathematics</h5></a>
+                 </div>
+               </div>
+               <div class="item">
+                 <div class="section_box">
+                   <a href="/site/categories/<%= cat.id %>"><div class="product_icon">
+                   <i class="fas fa-at"></i>
+                   </div><br>
+                   <h5>Biology</h5></a>
+                 </div>
+               </div>
+               <div class="item">
+                 <div class="section_box">
+                   <a href="/site/categories/<%= cat.id %>"><div class="product_icon">
+                   <i class="fas fa-at"></i>
+                   </div><br>
+                   <h5>History</h5></a>
+                 </div>
+               </div>
+               <div class="item">
+                 <div class="section_box">
+                   <a href="/site/categories/<%= cat.id %>"><div class="product_icon">
+                   <i class="fas fa-at"></i>
+                   </div><br>
+                   <h5>Accounts</h5></a>
+                 </div>
+               </div>
+               <div class="item">
+                 <div class="section_box">
+                   <a href="/site/categories/<%= cat.id %>"><div class="product_icon">
+                   <i class="fas fa-at"></i>
+                   </div><br>
+                   <h5>Business Studies</h5></a>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+         </div>
+     <% }) %>
+     <% } %>
     <div class="container-fluid my-4">
     	<div class="row">
     		<div class="col-md-5 col-lg-3 col-sm-5 d-none d-sm-block category_img">
