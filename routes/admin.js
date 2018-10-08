@@ -328,6 +328,7 @@ app.post('/sub-category',  function(req, res, next){
 app.get('/add_nano_category', function(req, res, next){
   req.getConnection(function(error, conn) {
       conn.query('SELECT id,name FROM tbl_categories ORDER BY id DESC',function(err, rows, fields) {
+        console.log(err)
           if (err) {
               req.flash('error', err)
               res.render('admin/category/nano_categories', {
