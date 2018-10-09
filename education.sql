@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 08, 2018 at 05:58 PM
+-- Generation Time: Oct 09, 2018 at 03:01 PM
 -- Server version: 10.1.29-MariaDB
 -- PHP Version: 7.1.12
 
@@ -21,6 +21,27 @@ SET time_zone = "+00:00";
 --
 -- Database: `education`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_boards`
+--
+
+CREATE TABLE `tbl_boards` (
+  `id` int(11) NOT NULL,
+  `board_name` varchar(50) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_boards`
+--
+
+INSERT INTO `tbl_boards` (`id`, `board_name`, `created_at`, `updated_at`) VALUES
+(3, 'PSEB', '2018-10-09 17:08:56', '2018-10-09 11:38:56'),
+(6, 'CBSE', '2018-10-09 17:47:10', '2018-10-09 12:17:10');
 
 -- --------------------------------------------------------
 
@@ -44,7 +65,30 @@ CREATE TABLE `tbl_categories` (
 INSERT INTO `tbl_categories` (`id`, `name`, `slug`, `image`, `created_at`, `updated_at`) VALUES
 (2, 'Class Wise', 'class_wise', '', '2018-10-06 08:49:20', '0000-00-00 00:00:00'),
 (12, 'Subjects', 'Subjects', '', '2018-10-07 13:12:05', '0000-00-00 00:00:00'),
-(13, 'Board', 'Board', '', '2018-10-07 13:12:19', '0000-00-00 00:00:00');
+(13, 'Board', 'Board', '', '2018-10-07 13:12:19', '0000-00-00 00:00:00'),
+(14, 'Exams', 'Exams', '', '2018-10-08 17:43:59', '0000-00-00 00:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_class`
+--
+
+CREATE TABLE `tbl_class` (
+  `id` int(11) NOT NULL,
+  `class_name` varchar(30) NOT NULL,
+  `board_id` int(11) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_class`
+--
+
+INSERT INTO `tbl_class` (`id`, `class_name`, `board_id`, `created_at`, `updated_at`) VALUES
+(9, '10th', 3, '2018-10-09 17:09:56', '2018-10-09 11:39:56'),
+(10, '9th', 3, '2018-10-09 17:10:14', '2018-10-09 11:40:14');
 
 -- --------------------------------------------------------
 
@@ -74,7 +118,8 @@ INSERT INTO `tbl_content` (`id`, `type`, `nano_category_id`, `title`, `descripti
 (24, '', 5, 'sd fsdf', '<p>&nbsp;sdf sdf&nbsp;<span class=\"math-tex\">\\(x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}\\)</span></p>\n', '', '2018-10-07 15:44:21', '0000-00-00 00:00:00'),
 (25, '', 4, 'vx dsf sdfsdd', '<p>&nbsp;sdf dsfds&nbsp; dsfsd<strong>&nbsp;f sd df ds&nbsp; dfdf</strong> dsd f</p>\n', '', '2018-10-07 15:55:35', '0000-00-00 00:00:00'),
 (26, '', 4, 's dfsd fs', '<ol>\n	<li>this is te jks dflskdj fsd&nbsp;<s>&nbsp; fdsf sd fsdfsd sd</s>&nbsp;a sdfsd sdf sdfds<em>&nbsp;sdf ds<strong>&nbsp;sdfs df</strong></em><strong>&nbsp;sdfsd&nbsp;</strong>&nbsp;sdfd sf</li>\n	<li>s ;lfjsldfjdskjfsd</li>\n</ol>\n', '', '2018-10-07 15:58:21', '0000-00-00 00:00:00'),
-(27, '', 5, 'Testing Title', '<p>this is an test equation.</p>\n\n<p>BY&nbsp;<strong>Kuldeep Sharma</strong></p>\n\n<p>sd sd sdf<span class=\"math-tex\">\\(x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}\\)</span></p>\n', '', '2018-10-07 15:59:59', '0000-00-00 00:00:00');
+(27, '', 5, 'Testing Title', '<p>this is an test equation.</p>\n\n<p>BY&nbsp;<strong>Kuldeep Sharma</strong></p>\n\n<p>sd sd sdf<span class=\"math-tex\">\\(x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}\\)</span></p>\n', '', '2018-10-07 15:59:59', '0000-00-00 00:00:00'),
+(28, '', 5, 'ATOMIC STURTURE', '<p>this fjds fsdhkjf jsdlkf jsdf jsdlj fsdl jls jfldsk ds f&nbsp;&nbsp;<span class=\"math-tex\">\\(x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}\\)</span>cdjfs44</p>\n\n<p>sdfjsdfjsld&nbsp;</p>\n', '', '2018-10-08 17:45:04', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -105,6 +150,28 @@ INSERT INTO `tbl_nano_category` (`id`, `name`, `slug`, `sub_category_id`, `image
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_subjects`
+--
+
+CREATE TABLE `tbl_subjects` (
+  `id` int(11) NOT NULL,
+  `subject_name` varchar(30) NOT NULL,
+  `class_id` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_subjects`
+--
+
+INSERT INTO `tbl_subjects` (`id`, `subject_name`, `class_id`, `created_at`, `updated_at`) VALUES
+(2, 'Science', 9, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(3, 'Math', 10, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_sub_categories`
 --
 
@@ -124,16 +191,47 @@ CREATE TABLE `tbl_sub_categories` (
 INSERT INTO `tbl_sub_categories` (`id`, `name`, `slug`, `category_id`, `created_at`, `updated_at`) VALUES
 (1, '10th', '10th', 2, '2018-10-06 08:49:40', '0000-00-00 00:00:00'),
 (2, 'PHYSICS', 'physics', 12, '2018-10-07 13:14:28', '0000-00-00 00:00:00'),
-(3, 'CHEMISTRY', 'chemisetry', 12, '2018-10-07 13:14:28', '0000-00-00 00:00:00');
+(3, 'CHEMISTRY', 'chemisetry', 12, '2018-10-07 13:14:28', '0000-00-00 00:00:00'),
+(7, '9th', '9th', 2, '2018-10-08 16:51:58', '0000-00-00 00:00:00'),
+(8, 'MATHS', 'MATHS', 12, '2018-10-08 16:53:00', '0000-00-00 00:00:00'),
+(9, 'ENGLISH', 'ENGLISH', 12, '2018-10-08 16:53:35', '0000-00-00 00:00:00'),
+(10, '8th', '8th', 2, '2018-10-08 16:54:16', '0000-00-00 00:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_topic`
+--
+
+CREATE TABLE `tbl_topic` (
+  `id` int(11) NOT NULL,
+  `topic_name` varchar(30) NOT NULL,
+  `subject_id` int(11) NOT NULL,
+  `description` varchar(200) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Indexes for dumped tables
 --
 
 --
+-- Indexes for table `tbl_boards`
+--
+ALTER TABLE `tbl_boards`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_categories`
 --
 ALTER TABLE `tbl_categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbl_class`
+--
+ALTER TABLE `tbl_class`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -150,6 +248,12 @@ ALTER TABLE `tbl_nano_category`
   ADD KEY `sub_category_id` (`sub_category_id`);
 
 --
+-- Indexes for table `tbl_subjects`
+--
+ALTER TABLE `tbl_subjects`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_sub_categories`
 --
 ALTER TABLE `tbl_sub_categories`
@@ -157,32 +261,62 @@ ALTER TABLE `tbl_sub_categories`
   ADD KEY `category_id` (`category_id`);
 
 --
+-- Indexes for table `tbl_topic`
+--
+ALTER TABLE `tbl_topic`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `tbl_boards`
+--
+ALTER TABLE `tbl_boards`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_categories`
 --
 ALTER TABLE `tbl_categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `tbl_class`
+--
+ALTER TABLE `tbl_class`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `tbl_content`
 --
 ALTER TABLE `tbl_content`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `tbl_nano_category`
 --
 ALTER TABLE `tbl_nano_category`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `tbl_subjects`
+--
+ALTER TABLE `tbl_subjects`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_sub_categories`
 --
 ALTER TABLE `tbl_sub_categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `tbl_topic`
+--
+ALTER TABLE `tbl_topic`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
