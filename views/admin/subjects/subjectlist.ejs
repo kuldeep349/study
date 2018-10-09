@@ -1,0 +1,97 @@
+<!--
+including header content which is common for all pages
+-->
+<%- include ../../adminlayouts/header.ejs %>
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+          Subjects Management
+        </h1>
+    </section>
+    <div class="row">
+    
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-6">
+            <select class="form-control" name="board_id" id="board_id">
+              <option disabled selected> choose board</option>
+              <% if (locals.data) {
+                  %>
+              <% locals.data.forEach(function(cl){
+                  %>
+              <option value="<%= cl.id %>"><%= cl.board_name %></option>
+              <% }) %>
+              <% } %>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <select class="form-control" name="class_id" id="class_id">
+              <option disabled selected> choose board</option>
+              <% if (locals.data) {
+                  %>
+              <% locals.data.forEach(function(cl){
+                  %>
+              <option value="<%= cl.id %>"><%= cl.board_name %></option>
+              <% }) %>
+              <% } %>
+            </select>
+          </div>
+        </div>
+
+        <br><br>
+
+        <div class="box">
+            <div class="box-body">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                  <th>Subject</th>
+                  <th style="width: 40px">Action</th>
+                </tr>
+              </thead>
+              <tbody id="subject_list">
+              </tody>
+            </table>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    </div>
+  </div>
+
+<!--
+including footer content which is common for all pages
+-->
+<%- include ../../adminlayouts/footer.ejs %>
+<script>
+$(document).on('change','#board_id',function(){
+  var html = '';
+  $.get('/admin/class/show_class?id='+$(this).val(),function(res){
+    $.each(res,function(key,val){
+      html += '<option value="'+val.id+'">'+val.class_name+'</option>';
+    })
+      $('#class_id').html(html)
+  })
+})
+$(document).on('change','#class_id',function(){
+  var html = '';
+  $.get('/admin/subject/show_subjects?id='+$(this).val(),function(res){
+    $.each(res,function(key,val){
+      html += '<tr><td>'+val.subject_name+'</td><td><button class="btn btn-info dlsub" data-id="'+val.id+'">Delete</td></tr>';
+    })
+      $('#subject_list').html(html)
+  })
+})
+$(document).on('click','.dlsub',function(){
+  $.get('/admin/subject/delete?id='+$(this).data('id'),function(res){
+    alert(res.message)
+    if(res.success == 1){
+      location.reload()
+    }
+
+  },'json')
+})
+</script>

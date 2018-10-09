@@ -1,7 +1,8 @@
 
 var express = require('express')
 var app = express()
-
+var await = require('await')
+const {database} = require('../db.js')
 // app.get('/reb', function(req, res) {
 //     // render to views/index.ejs template file
 //     //res.render('index', {title: 'Application R.E.B'})
@@ -24,30 +25,38 @@ var app = express()
 //
 // })
 
-app.get('/', function(req, res, next) {
+app.get('/',  function(req, res, next) {
+
     req.getConnection(function(error, conn) {
+      var sub_cat; sub_cats = []
       conn.query('SELECT id,name FROM tbl_categories ',function(err, rows, fields) {
         var categories = rows;
-        for (x in rows) {
-          categories[x].sub = {};
-          //categories[x].sub = [x , 'a', 'b']
-            conn.query('SELECT id,name FROM tbl_sub_categories where category_id =  '+ categories[x].id,function(err, srows, fields) {
-            if(rows.length){
-                categories[x].sub = rows;
-                console.log(srows.length + ' array length')
-            }else{
-              categories[x].sub = [x , 1 ,2]
-            }
-            })
+        // for (x in rows) {
+        var x = 0;
+          while (x < 3) {
+           //sub_cat = await
+           var sql = 'select id,name from tbl_sub_categories where  category_id  = '+ rows[x].id;
+           sub_cat = await (database.query (sql, [], true))
+
+          categories[x].sub = sub_cat
+          console.log(sub_cat)
+          x++;
         }
-        console.log(categories)
+        // console.log(categories)
         res.render('index', {
             title: 'Class List',
             data: categories
         })
     })
   })
+
 })
+
+
+const getCategories = async function (cat_id , req) {
+    //categories[x].sub = [x , 'a', 'b']
+
+}
 app.get('/class-wise', function(req, res, next) {
     res.render('site/class-wise', {
         title: 'Class List',

@@ -1,109 +1,75 @@
 var express = require('express')
 var app = express()
 
- 
+
 // SHOW LIST OF classes
-app.get('/', function(req, res, next) {
+app.get('/board-list', function(req, res, next) {
     req.getConnection(function(error, conn) {
-        conn.query('SELECT * FROM eligibilities ORDER BY id DESC',function(err, rows, fields) {
+        conn.query('SELECT * FROM tbl_boards ORDER BY id DESC',function(err, rows, fields) {
             //if(err) throw err
             if (err) {
                 req.flash('error', err)
-                res.render('eligibility/eligibilitylist', {
-                    title: 'Eligibility List', 
+                res.render('admin/board/boardlist', {
+                    title: 'Eligibility List',
                     data: ''
                 })
             } else {
                 // render to views/user/list.ejs template file
-                res.render('eligibility/eligibilitylist', {
-                    title: 'Eligibility List', 
+                res.render('admin/board/boardlist', {
+                    title: 'Eligibility List',
                     data: rows
                 })
             }
         })
     })
 })
- 
+app.get('/show_boards', function(req, res, next) {
+    req.getConnection(function(error, conn) {
+        conn.query('SELECT * FROM tbl_boards ORDER BY id DESC',function(err, rows, fields) {
+          res.writeHead(200, {'Content-Type': 'application/json'});
+            res.end(JSON.stringify(rows));
+        })
+    })
+})
 // SHOW ADD Class FORM
-app.get('/addeligibility', function(req, res, next){    
+app.get('/addboard', function(req, res, next){
     // render to views/user/add.ejs
-    res.render('eligibility/addeligibility', {
+    res.render('admin/board/addboard', {
         title: 'Add Eligibility',
         requirement: '',
-        eligibility_type:'',        
-        value:'',  
+        eligibility_type:'',
+        value:'',
         unit:'',
         pursuing:'',
         category:'',
         gender:'',
     })
 })
- 
-// ADD NEW Content POST ACTION
-app.post('/addeligibility', function(req, res, next){    
-    req.assert('requirement', 'Requirement is required').notEmpty()           
-    req.assert('eligibility_type', 'Eligibility Type is required').notEmpty()         
-    req.assert('value', 'Value is required').notEmpty()
-    req.assert('unit', 'Unit is required').notEmpty()
-    req.assert('pursuing', ' Pursuing Details are required').notEmpty()
-    req.assert('category', 'Category Type is required').notEmpty()
-    req.assert('gender', 'Gender is required').notEmpty() 
+
+app.post('/addboard', function(req, res, next){
+    req.assert('board_name','Class Name is required').notEmpty()         //Validate class name
     var errors = req.validationErrors()
-    
-    if( !errors ) {   //No errors were found.  Passed Validation!
-        
-        /********************************************
-         * Express-validator module
-         
-        req.body.comment = 'a <span>comment</span>';
-        req.body.username = '   a user    ';
- 
-        req.sanitize('comment').escape(); // returns 'a &lt;span&gt;comment&lt;/span&gt;'
-        req.sanitize('username').trim(); // returns 'a user'
-        ********************************************/
-        var elg = {
-            requirement: req.sanitize('requirement').escape().trim(),
-            eligibility_type: req.sanitize('eligibility_type').escape().trim(),
-            value:req.sanitize('value').escape().trim(),
-            unit:req.sanitize('unit').escape().trim(),
-            pursuing:req.sanitize('pursuing').escape().trim(),
-            category:req.sanitize('category').escape().trim(),
-            gender:req.sanitize('gender').escape().trim(),
-            
+    if( !errors ) {
+      var cl = {
+            board_name: req.sanitize('board_name').escape().trim(),
         }
-        
+
         req.getConnection(function(error, conn) {
-            conn.query('INSERT INTO eligibilities SET ?', elg, function(err, result) {
+            conn.query('INSERT INTO tbl_boards SET ?', cl, function(err, result) {
                 //if(err) throw err
                 if (err) {
                     req.flash('error', err)
-                    
-                    // render to views/user/add.ejs
-                    res.render('eligibility/addeligibility', {
-                        title: 'Add Eligibility',
-                        requirement:elg.requirement,
-                        eligibility_type: elg.eligibility_type,
-                        value:elg.value,
-                        unit:elg.unit, 
-                        pursuing:elg.pursuing,
-                        category:elg.category,
-                        gender:elg.gender,                   
-                    })
-                } else {                
+                    res.render('admin/board/addboard', {
+                        title: 'Add New Class',
+                        class_id: '',
+                        class_name:'',
+                  })
+                } else {
                     req.flash('success', 'Data added successfully!')
-                    
-                    // render to views/user/add.ejs
-                    res.render('eligibility/addeligibility', {
-                        title: 'Add Eligibility',
-                        requirement: '',
-                        eligibility_type:'',
-                        value:'',
-                        unit:'',
-                        pursuing:'',
-                        category:'',
-                        gender:'',
-
-
+                    res.render('admin/board/addboard', {
+                        title: 'Add New Class',
+                        class_id: '',
+                        class_name:'',
                     })
                 }
             })
@@ -113,32 +79,22 @@ app.post('/addeligibility', function(req, res, next){
         var error_msg = ''
         errors.forEach(function(error) {
             error_msg += error.msg + '<br>'
-        })                
-        req.flash('error', error_msg)        
-        
-        /**
-         * Using req.body.name 
-         * because req.param('name') is deprecated
-         */ 
-        res.render('eligibility/addeligibility', { 
-            title: 'Add Eligibility',
-            requirement: req.body.requirement,
-            eligibility_type: req.body.eligibility_type,
-            value:req.body.value,
-            unit:req.body.unit,
-            pursuing:req.body.pursuing,
-            category:req.body.category,
-            gender:req.body.gender,
         })
+        req.flash('error', error_msg)
+
+         res.render('admin/classes/addclass', {
+             title: 'Add New Class',
+             class_id: '',
+             class_name:'',
+         })
     }
 })
- 
 // SHOW EDIT USER FORM
 app.get('/editeligibility/(:id)', function(req, res, next){
     req.getConnection(function(error, conn) {
         conn.query('SELECT * FROM eligibilities WHERE id = ' + req.params.id, function(err, rows, fields) {
             if(err) throw err
-            
+
             // if class not found
             if (rows.length <= 0) {
                 req.flash('error', 'Eligibility not found with id = ' + req.params.id)
@@ -147,7 +103,7 @@ app.get('/editeligibility/(:id)', function(req, res, next){
             else { // if class found
                 // render to views/classes/editclass.ejs template file
                 res.render('eligibility/editeligibility', {
-                    title: 'Edit Eligibilty', 
+                    title: 'Edit Eligibilty',
                     //data: rows[0],
                     id: rows[0].id,
                     requirement: rows[0].requirement,
@@ -156,13 +112,13 @@ app.get('/editeligibility/(:id)', function(req, res, next){
                     value: rows[0].value,
                     pursuing: rows[0].pursuing,
                     category: rows[0].category,
-                    gender:rows[0].gender                    
+                    gender:rows[0].gender
                 })
-            }            
+            }
         })
     })
 })
- 
+
 // EDIT classes POST ACTION
 app.put('/editeligibility/:id', function(req, res, next) {
     req.assert('requirement', 'Requirement is required').notEmpty()           //Validate name
@@ -172,18 +128,18 @@ app.put('/editeligibility/:id', function(req, res, next) {
     req.assert('pursuing', 'Pursuing Details are required').notEmpty()
     req.assert('category', 'Category is required').notEmpty()
     req.assert('gender', 'Gender is required').notEmpty()
-    
-    
+
+
     var errors = req.validationErrors()
-    
+
     if( !errors ) {   //No errors were found.  Passed Validation!
-        
+
         /********************************************
          * Express-validator module
-         
+
         req.body.comment = 'a <span>comment</span>';
         req.body.username = '   a user    ';
- 
+
         req.sanitize('comment').escape(); // returns 'a &lt;span&gt;comment&lt;/span&gt;'
         req.sanitize('username').trim(); // returns 'a user'
         ********************************************/
@@ -195,10 +151,10 @@ app.put('/editeligibility/:id', function(req, res, next) {
             pursuing: req.sanitize('pursuing').escape().trim(),
             category: req.sanitize('category').escape().trim(),
             gender: req.sanitize('gender').escape().trim(),
-                       
-                     
+
+
         }
-        
+
         req.getConnection(function(error, conn) {
             console.log(req.params);
 
@@ -206,7 +162,7 @@ app.put('/editeligibility/:id', function(req, res, next) {
                 //if(err) throw err
                 if (err) {
                     req.flash('error', err)
-                    
+
                     // render to views/user/add.ejs
                     res.render('eligibility/editeligibility', {
                         title: 'Edit Eligibilities',
@@ -220,19 +176,19 @@ app.put('/editeligibility/:id', function(req, res, next) {
                     })
                 } else {
                     req.flash('success', 'Data updated successfully!')
-                    
+
                     conn.query('SELECT * FROM eligibilities ORDER BY id DESC',function(err, rows, fields) {
                         //if(err) throw err
                         if (err) {
                             req.flash('error', err)
                             res.render('eligibility/eligibilitylist', {
-                                title: 'Eligibility List', 
+                                title: 'Eligibility List',
                                 data: ''
                             })
                         } else {
                             // render to views/user/list.ejs template file
                             res.render('eligibility/eligibilitylist', {
-                                title: 'Eligibility List', 
+                                title: 'Eligibility List',
                                 data: rows
                             })
                         }
@@ -247,14 +203,14 @@ app.put('/editeligibility/:id', function(req, res, next) {
             error_msg += error.msg + '<br>'
         })
         req.flash('error', error_msg)
-        
+
         /**
-         * Using req.body.name 
+         * Using req.body.name
          * because req.param('name') is deprecated
-         */ 
-        res.render('eligibility/editeligibility', { 
-            title: 'Edit Eligibility',            
-            
+         */
+        res.render('eligibility/editeligibility', {
+            title: 'Edit Eligibility',
+
             requirement: req.body.requirement,
             eligibility_type: req.body.eligibility_type,
             unit: req.body.unit,
@@ -265,25 +221,25 @@ app.put('/editeligibility/:id', function(req, res, next) {
         })
     }
 })
- 
+
 // DELETE Class
 app.delete('/delete/(:id)', function(req, res, next) {
-    var elg = { id: req.params.id }
-    
+    var cl = { id: req.params.id }
+
     req.getConnection(function(error, conn) {
-        conn.query('DELETE FROM eligibilities WHERE id = ' + req.params.id, elg, function(err, result) {
+        conn.query('DELETE FROM tbl_boards WHERE id = ' + req.params.id, cl, function(err, result) {
             //if(err) throw err
             if (err) {
                 req.flash('error', err)
                 // redirect to users list page
-                res.redirect('/eligible')
+                res.redirect('/admin/board/board-list')
             } else {
-                req.flash('success', 'User deleted successfully! id = ' + req.params.id)
+                req.flash('success', 'Board deleted successfully! id = ' + req.params.id)
                 // redirect to users list page
-                res.redirect('/eligible')
+                res.redirect('/admin/board/board-list')
             }
         })
     })
 })
- 
+
 module.exports = app
