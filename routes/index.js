@@ -110,8 +110,8 @@ app.get('/blog_subject_topic', function(req, res, next) {
     })
 })
 
-app.get('/text_urself', function(req, res, next) {
-    res.render('site/text_urself', {
+app.get('/test_your_self', function(req, res, next) {
+    res.render('site/test_your_self', {
         title: 'Class List',
         data: 'this is site index'
     })
@@ -172,6 +172,26 @@ app.get('/subject-topic', function(req, res, next) {
     })
 })
 
+app.get('/test_yourself_subjectwise', function(req, res, next) {
+    res.render('site/test_yourself_subjectwise', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
+app.get('/test_yourself_subcategory', function(req, res, next) {
+    res.render('site/test_yourself_subcategory', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
+app.get('/quiz_test', function(req, res, next) {
+    res.render('site/quiz_test', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
 
 app.get('/admin/', function(req, res, next) {
     res.render('admin/index', {

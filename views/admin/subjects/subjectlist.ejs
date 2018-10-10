@@ -28,14 +28,7 @@ including header content which is common for all pages
           </div>
           <div class="col-md-6">
             <select class="form-control" name="class_id" id="class_id">
-              <option disabled selected> choose board</option>
-              <% if (locals.data) {
-                  %>
-              <% locals.data.forEach(function(cl){
-                  %>
-              <option value="<%= cl.id %>"><%= cl.board_name %></option>
-              <% }) %>
-              <% } %>
+              
             </select>
           </div>
         </div>
