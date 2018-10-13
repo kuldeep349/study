@@ -1,5 +1,5 @@
-var express = require('express')
-var app = express()
+var express = require('express');
+var app = express();
 var str_replace = require('str_replace');
 session = require('express-session');
 app.use(session({
@@ -142,114 +142,114 @@ app.post('/add-category', auth, function(req, res, next){
 })
 
 // code  for content managment By Kush
-app.get('/content-list',  function(req, res, next){
-  req.getConnection(function(error, conn) {
-      conn.query('SELECT * FROM tbl_content ORDER BY id DESC',function(err, rows, fields) {
-          if (err) {
-              req.flash('error', err)
-              res.render('admin/content/content_list', {
-                  title: 'Class List',
-                  data: ''
-              })
-          } else {
-              // render to views/user/list.ejs template file
-              res.render('admin/content/content_list', {
-                  title: 'Class List',
-                  data: rows
-              })
-          }
-      })
-  })
-})
-/*to add post content */
-app.post('/add-content', function(req, res, next){
+// app.get('/content-list',  function(req, res, next){
+//   req.getConnection(function(error, conn) {
+//       conn.query('SELECT * FROM tbl_content ORDER BY id DESC',function(err, rows, fields) {
+//           if (err) {
+//               req.flash('error', err)
+//               res.render('admin/content/content_list', {
+//                   title: 'Class List',
+//                   data: ''
+//               })
+//           } else {
+//               // render to views/user/list.ejs template file
+//               res.render('admin/content/content_list', {
+//                   title: 'Class List',
+//                   data: rows
+//               })
+//           }
+//       })
+//   })
+// })
+// /*to add post content */
+// app.post('/add-content', function(req, res, next){
 
-  req.assert('title','title id is required').notEmpty()           //Validate id
-  req.assert('content','content is required').notEmpty()         //Validate class name
-  var errors = req.validationErrors()
-  var success,message;
-  var response = [];
+//   req.assert('title','title id is required').notEmpty()           //Validate id
+//   req.assert('content','content is required').notEmpty()         //Validate class name
+//   var errors = req.validationErrors()
+//   var success,message;
+//   var response = [];
 
-  // res.writeHead(200, {'Content-Type': 'application/json'});
-  // res.end(JSON.stringify(response));
-  if( !errors ) {
-    var content = {
-        title: req.sanitize('title').escape().trim(),
-        nano_category_id: req.sanitize('nano_category_id').escape().trim(),
-        description:req.sanitize('content'),
-        file:''
-    }
-    req.getConnection(function(error, conn) {
-      conn.query('INSERT INTO tbl_content SET ?', content, function(err, result) {
-        if (err) {
-          response = {
-            success :  0,
-            message:'error while inserting record'
-          }
-        }else{
-          response = {
-            success :  1,
-            message:'Content Added successfully'
-          }
-        }
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.end(JSON.stringify(response));
-      })
-    })
-  }
-  else{
-      var error_msg = ''
-      errors.forEach(function(error) {
-          error_msg += error.msg + '<br>'
-      })
-      response = {
-        success :  0,
-        message:error_msg
-      }
-      res.writeHead(200, {'Content-Type': 'application/json'});
-      res.end(JSON.stringify(response));
-  }
+//   // res.writeHead(200, {'Content-Type': 'application/json'});
+//   // res.end(JSON.stringify(response));
+//   if( !errors ) {
+//     var content = {
+//         title: req.sanitize('title').escape().trim(),
+//         nano_category_id: req.sanitize('nano_category_id').escape().trim(),
+//         description:req.sanitize('content'),
+//         file:''
+//     }
+//     req.getConnection(function(error, conn) {
+//       conn.query('INSERT INTO tbl_content SET ?', content, function(err, result) {
+//         if (err) {
+//           response = {
+//             success :  0,
+//             message:'error while inserting record'
+//           }
+//         }else{
+//           response = {
+//             success :  1,
+//             message:'Content Added successfully'
+//           }
+//         }
+//         res.writeHead(200, {'Content-Type': 'application/json'});
+//         res.end(JSON.stringify(response));
+//       })
+//     })
+//   }
+//   else{
+//       var error_msg = ''
+//       errors.forEach(function(error) {
+//           error_msg += error.msg + '<br>'
+//       })
+//       response = {
+//         success :  0,
+//         message:error_msg
+//       }
+//       res.writeHead(200, {'Content-Type': 'application/json'});
+//       res.end(JSON.stringify(response));
+//   }
 
 
-})
+// })
 
-app.get('/add-content', function(req, res, next){
-  req.getConnection(function(error, conn) {
-      conn.query('SELECT * FROM tbl_categories ORDER BY id DESC',function(err, rows, fields) {
-        if(rows){
-          res.render('admin/content/add-content', {
-              title: 'Class List',
-              data: rows
-          })
-        }else{
-          res.render('admin/content/add-content', {
-              title: 'Class List',
-              data: ''
-          })
-        }
-      })
-  })
-})
+// app.get('/add-content', function(req, res, next){
+//   req.getConnection(function(error, conn) {
+//       conn.query('SELECT * FROM tbl_categories ORDER BY id DESC',function(err, rows, fields) {
+//         if(rows){
+//           res.render('admin/content/add-content', {
+//               title: 'Class List',
+//               data: rows
+//           })
+//         }else{
+//           res.render('admin/content/add-content', {
+//               title: 'Class List',
+//               data: ''
+//           })
+//         }
+//       })
+//   })
+// })
 // function to add sub category
-app.get('/add_sub_category', function(req, res, next){
-  req.getConnection(function(error, conn) {
-      conn.query('SELECT id,name FROM tbl_categories ORDER BY id DESC',function(err, rows, fields) {
-          if (err) {
-              req.flash('error', err)
-              res.render('admin/category/sub_category', {
-                  title: 'Class List',
-                  data: ''
-              })
-          } else {
-              // render to views/user/list.ejs template file
-              res.render('admin/category/sub_category', {
-                  title: 'Class List',
-                  data: rows
-              })
-          }
-      })
-  })
-})
+// app.get('/add_sub_category', function(req, res, next){
+//   req.getConnection(function(error, conn) {
+//       conn.query('SELECT id,name FROM tbl_categories ORDER BY id DESC',function(err, rows, fields) {
+//           if (err) {
+//               req.flash('error', err)
+//               res.render('admin/category/sub_category', {
+//                   title: 'Class List',
+//                   data: ''
+//               })
+//           } else {
+//               // render to views/user/list.ejs template file
+//               res.render('admin/category/sub_category', {
+//                   title: 'Class List',
+//                   data: rows
+//               })
+//           }
+//       })
+//   })
+// })
 /*to get sub categories*/
 app.get('/get_subcategories/',  function(req, res, next){
     req.getConnection(function(error, conn) {

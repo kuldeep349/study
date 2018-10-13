@@ -1,144 +1,126 @@
 var express = require('express')
 var app = express()
-
+//var formidable = require('formidable');
  
 // SHOW LIST OF classes
-app.get('/', function(req, res, next) {
+app.get('/contentlist', function(req, res, next) {
     req.getConnection(function(error, conn) {
-        conn.query('SELECT * FROM content ORDER BY id DESC',function(err, rows, fields) {
+        conn.query('SELECT * FROM tbl_contents ORDER BY id DESC',function(err, rows, fields) {
             //if(err) throw err
             if (err) {
                 req.flash('error', err)
-                res.render('content/contentlist', {
-                    title: 'Content List', 
+                res.render('admin/content/contentlist', {
+                    title: 'Topic List', 
                     data: ''
                 })
             } else {
                 // render to views/user/list.ejs template file
-                res.render('content/contentlist', {
-                    title: 'Content List', 
+                res.render('admin/content/contentlist', {
+                    title: 'Topic List', 
                     data: rows
                 })
             }
         })
     })
 })
- 
-app.get('/viewpage', function(req, res) {
-    res.render('content/viewpage');
-});
-
-
-
-// SHOW ADD Class FORM
-app.get('/addcontent', function(req, res, next){    
-    // render to views/user/add.ejs
-    res.render('content/addcontent', {
-        title: 'Add New Content',
-        pdf_link: '',
-        heading:'',
-        content:'',        
-        flipbook:'',  
-        keywords:'',
-        tags:'',
-        owner:'',
+app.get('/addcontent', function(req, res, next){
+    req.getConnection(function(error, conn) {
+        conn.query('SELECT * FROM tbl_boards ORDER BY id DESC',function(err, rows, fields) {
+            //if(err) throw err
+            if (err) {
+                req.flash('error', err)
+                res.render('admin/content/addcontent', {
+                    title: 'Add Topic',
+                    data:''
+                })
+            } else {
+              res.render('admin/content/addcontent', {
+                  title: 'Add Subject',
+                  data:rows
+              })
+            }
+        })
     })
-})
- 
+  
+  })
+
+
 // ADD NEW Content POST ACTION
-app.post('/addcontent', function(req, res, next){  
-    console.log(req.body);  
-    req.assert('pdf_link', 'PDF_Link is required').notEmpty()           
-    req.assert('heading', 'Heading is required').notEmpty()
-    req.assert('content', 'Content is required').notEmpty()         
-    req.assert('flipbook', 'FlipBook is required').notEmpty()
-    req.assert('keywords', 'Keywords are required').notEmpty()
-    req.assert('tags', ' Tags are required').notEmpty()
-    req.assert('owner', 'Owner Name is required').notEmpty() 
-    var errors = req.validationErrors()
-    
-    if( !errors ) {   //No errors were found.  Passed Validation!
-        
-        /********************************************
-         * Express-validator module
-         
-        req.body.comment = 'a <span>comment</span>';
-        req.body.username = '   a user    ';
+/*
+* GET home page.
+*/
  
-        req.sanitize('comment').escape(); // returns 'a &lt;span&gt;comment&lt;/span&gt;'
-        req.sanitize('username').trim(); // returns 'a user'
-        ********************************************/
-        var cont = {
-            pdf_link: req.sanitize('pdf_link').escape().trim(),
-            heading: req.sanitize('heading').escape().trim(),
-            content: req.sanitize('content').escape().trim(),
-            flipbook:req.sanitize('flipbook').escape().trim(),
-            keywords:req.sanitize('keywords').escape().trim(),
-            tags:req.sanitize('tags').escape().trim(),
-            owner:req.sanitize('owner').escape().trim(),
-            
-        }
-        
+app.post('/mycontent', function(req, res, next){
+
+
+    message = '';
+   if(req.method == "POST"){
+      var post  = req.body;
+      var cls = post.class_id;
+      var subject = post.subject_id;
+      var topic = post.topic_id;
+      var my_title = post.my_title;
+      var myfile_type = post.filetype;
+      var content_wise = post.content_desc
+	 
+       if(content_wise == ''){
+		var file = req.files.pdf;
+		var img_name=file.name;
+
+	  	 if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/gif" ||file.mimetype == "application/pdf"){
+                                 
+              file.mv('public/images/upload_images/'+file.name, function(err) {
+                             
+	              
+                  
+	                  req.getConnection(function(error, conn) {
+      					var sql = "INSERT INTO `tbl_contents`(`class_id`,`subject_id`,`topic_id`,`file_type`,`content_title`,`file`) VALUES ('" + cls + "','" + subject + "','" + topic + "','" + myfile_type + "','" + my_title + "','" + img_name + "')";
+
+    						 conn.query(sql,function(err, result){
+    						 if (err) {
+                                 req.flash('error', err)
+                                res.redirect('/admin/content/addcontent')
+                        
+                           } else {                
+                             req.flash('success', 'Content added successfully!')
+                               res.redirect('/admin/content/addcontent')
+                          
+                              }
+                             });
+    						
+					   });
+                 });
+          } else {
+            message = "This format is not allowed , please upload file with '.png','.gif','.jpg','.pdf'";
+            res.render('addcontent.ejs',{message: message});
+          }
+
+       }else{
+
         req.getConnection(function(error, conn) {
-            conn.query('INSERT INTO content SET ?', cont, function(err, result) {
-                //if(err) throw err
-                if (err) {
-                    req.flash('error', err)
-                    
-                    // render to views/user/add.ejs
-                    res.render('content/addcontent', {
-                        title: 'Add New Content',
-                        pdf_link: cont.pdf_link,
-                        heading: cont.heading,
-                        content:cont.content,
-                        flipbook:cont.flipbook,
-                        keywords:cont.keywords, 
-                        tags:cont.tags,
-                        owner:cont.owner,                   
-                    })
-                } else {                
-                    req.flash('success', 'Data added successfully!')
-                    
-                    // render to views/user/add.ejs
-                    res.render('content/addcontent', {
-                        title: 'Add New Content',
-                        pdf_link: '',
-                        heading:'',
-                        content:'',
-                        flipbook:'',
-                        keywords:'',
-                        tags:'',
-                        owner:'',
+                        var sql = "INSERT INTO `tbl_contents`(`class_id`,`subject_id`,`topic_id`,`file_type`,`content_title`,`content` ) VALUES ('" + cls + "','" + subject + "','" + topic + "','" + myfile_type + "','" + my_title + "','" + content_wise + "')";
+
+                             conn.query(sql,function(err, result){
+                             if (err) {
+                                 req.flash('error', err)
+                                res.redirect('/admin/content/addcontent')
+                        
+                           } else {                
+                             req.flash('success', 'Content added successfully!')
+                               res.redirect('/admin/content/addcontent')
+                          
+                              }
+                             });
+                            
+                       });
 
 
-                    })
-                }
-            })
-        })
-    }
-    else {   //Display errors to user
-        var error_msg = ''
-        errors.forEach(function(error) {
-            error_msg += error.msg + '<br>'
-        })                
-        req.flash('error', error_msg)        
-        
-        /**
-         * Using req.body.name 
-         * because req.param('name') is deprecated
-         */ 
-        res.render('content/addcontent', { 
-            title: 'Add New Content',
-            pdf_link: req.body.pdf_link,
-            heading: req.body.heading,
-            content:req.body.content,
-            flipbook:req.body.flipbook,
-            keywords:req.body.keywords,
-            tags:req.body.tags,
-            owner:req.body.owner,
-        })
-    }
-})
+    }   
+   } else {
+      res.render('addcontent');
+   }
+ 
+});
  
 // SHOW EDIT USER FORM
 app.get('/editcontent/(:id)', function(req, res, next){

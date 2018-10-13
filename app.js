@@ -2,7 +2,10 @@ var express = require('express')
 var app = express()
 var expressValidator = require('express-validator')
 var path = require('path')
+var busboy = require('then-busboy')
+var fileUpload = require('express-fileupload')
 var mysql = require('mysql')
+var exp = require('exports')
 
 /**
  * This middleware provides a consistent API
@@ -35,6 +38,7 @@ app.use(myConnection(mysql, dbOptions, 'pool'))
  */
 app.set('view engine', 'ejs')
 
+
 /**
  * import routes/index.js
  * import routes/users.js
@@ -52,11 +56,12 @@ var tcr=require('./routes/teacher')
 var home=require('./routes/home')
 var site=require('./routes/site')
 var admin=require('./routes/admin')
+
 // for front end
 /*app.get('/', function(req, res){
     res.render('index',{user:"John Smith"})
   }); */
-
+app.use(fileUpload());
 /**
  * Express Validator Middleware for Form Validation
  */
@@ -122,7 +127,7 @@ app.use(flash())
 app.use('/', index)
 app.use('/reb/users', users)
 app.use('/admin/class',cl)
-app.use('/reb/contents',cont)
+app.use('/admin/content',cont)
 app.use('/admin/board',board)
 app.use('/admin/topic',fld)
 app.use('/reb/streams',strm)

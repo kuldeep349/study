@@ -1,0 +1,57 @@
+<%- include ../../adminlayouts/header.ejs %>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+  <div class="content-wrapper">
+    <section class="content-header">
+      <h1>
+        Content List
+      </h1>
+    </section>
+    <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Content displayed on site</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body no-padding">
+              <table class="table table-condensed">
+                <tbody id="tbody">
+                  <tr>
+                  <th style="width: 10px">#</th>
+                  <th>Title</th>
+                  <th>description</th>
+                  <th>Nano Category</th>
+                  <th>Sub Category</th>
+                  <th>Category</th>
+                  <th style="width: 40px">Added At</th>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+            <div id="desc">
+            </div>
+            <!-- /.box-body -->
+          </div>
+  </div>
+</div>
+
+
+
+<%- include ../../adminlayouts/footer.ejs %>
+<script>
+$.get('/admin/get_content',function(res){
+  $.each(res , function(key , val){
+    $('#tbody').append('<tr><td>'+val.id+'</td><td>'+val.title+'</td><td id="desc'+key+'">'+val.description+'</td><td>'+val.nano_category+'</td><td>'+val.sub_category+'</td><td>'+val.category+'</td><td>'+val.created_at+'</td></tr>');
+  $('#desc'+key).html($('#desc'+key).text());
+  })
+},'json');
+
+var notWorking = function(html) {
+    var el = document.createElement('div');
+    el.innerHTML = html;
+    return el.childNodes[0];
+}
+</script>

@@ -2,7 +2,7 @@ var express = require('express')
 var app = express()
 
  
-// SHOW LIST OF classes
+// SHOW LIST OF Topiclist
 app.get('/topic-list', function(req, res, next) {
     req.getConnection(function(error, conn) {
         conn.query('SELECT * FROM tbl_boards ORDER BY id DESC',function(err, rows, fields) {
