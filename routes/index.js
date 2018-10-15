@@ -57,6 +57,13 @@ const getCategories = async function (cat_id , req) {
     //categories[x].sub = [x , 'a', 'b']
 
 }
+app.get('/addtopic', function(req, res, next) {
+    res.render('admin/topic/addtopic', {
+        title: 'Class List',
+        data: 'this is site index'
+    })
+})
+
 app.get('/class-wise', function(req, res, next) {
     res.render('site/class-wise', {
         title: 'Class List',
