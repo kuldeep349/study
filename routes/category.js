@@ -67,7 +67,7 @@ app.get('/add-category', auth, function(req, res, next){
               })
           } else {
               // render to views/user/list.ejs template file
-              res.render('admin/category/add-category', {
+              res.render('admin/category/addcategory', {
                   title: 'Class List',
                   data: rows
               })
