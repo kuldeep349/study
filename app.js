@@ -6,6 +6,7 @@ var busboy = require('then-busboy')
 var fileUpload = require('express-fileupload')
 var mysql = require('mysql')
 var exp = require('exports')
+var fs = require('fs');
 
 /**
  * This middleware provides a consistent API
@@ -52,7 +53,7 @@ var fld=require('./routes/topic')
 var strm=require('./routes/streams')
 var sbj=require('./routes/subject')
 var exm=require('./routes/exam')
-var tcr=require('./routes/teacher')
+var tcr=require('./routes/category')
 var home=require('./routes/home')
 var site=require('./routes/site')
 var admin=require('./routes/admin')
@@ -133,7 +134,7 @@ app.use('/admin/topic',fld)
 app.use('/reb/streams',strm)
 app.use('/admin/subject',sbj)
 app.use('/reb/exam',exm)
-app.use('/reb/teacher',tcr)
+app.use('/admin/category',tcr)
 app.use('/reb/home',home)
 app.use('/site',site)
 app.use('/admin',admin)
@@ -143,6 +144,7 @@ app.use('/admin',admin)
 app.use(express.static(path.join(__dirname, 'assets')));
 
 
+app.use(express.static(path.join(__dirname, 'assets/uploads/pdf/')));
 
 
 app.listen(3000, function(){

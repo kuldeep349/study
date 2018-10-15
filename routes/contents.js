@@ -1,28 +1,54 @@
 var express = require('express')
 var app = express()
+
 //var formidable = require('formidable');
  
 // SHOW LIST OF classes
-app.get('/contentlist', function(req, res, next) {
+app.get('/contentlist', function(req, res, next){
     req.getConnection(function(error, conn) {
-        conn.query('SELECT * FROM tbl_contents ORDER BY id DESC',function(err, rows, fields) {
+        conn.query('SELECT * FROM tbl_boards ORDER BY id DESC',function(err, rows, fields) {
             //if(err) throw err
             if (err) {
                 req.flash('error', err)
                 res.render('admin/content/contentlist', {
-                    title: 'Topic List', 
-                    data: ''
+                    title: 'Add Topic',
+                    data:''
                 })
             } else {
-                // render to views/user/list.ejs template file
-                res.render('admin/content/contentlist', {
-                    title: 'Topic List', 
-                    data: rows
-                })
+              res.render('admin/content/contentlist', {
+                  title: 'Add Subject',
+                  data:rows
+              })
             }
         })
     })
+  
+  })
+
+app.get('/showfile', function(req, res, next) {
+    req.getConnection(function(error, conn) {
+      var query = 'SELECT * FROM tbl_contents where file_type = "0" and topic_id = '+req.query.id;
+        conn.query(query,function(err, rows, fields) {
+          res.writeHead(200, {'Content-Type': 'application/json'});
+            res.end(JSON.stringify(rows));
+        })
+    })
 })
+
+app.get('/showpdf', function(req, res, next) {
+    req.getConnection(function(error, conn) {
+      var query = 'SELECT * FROM tbl_contents where file_type = "1" and topic_id = '+req.query.id;
+        conn.query(query,function(err, rows, fields) {
+          res.writeHead(200, {'Content-Type': 'application/json'});
+            res.end(JSON.stringify(rows));
+        })
+    })
+})
+
+
+
+
+
 app.get('/addcontent', function(req, res, next){
     req.getConnection(function(error, conn) {
         conn.query('SELECT * FROM tbl_boards ORDER BY id DESC',function(err, rows, fields) {
@@ -69,7 +95,7 @@ app.post('/mycontent', function(req, res, next){
 
 	  	 if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/gif" ||file.mimetype == "application/pdf"){
                                  
-              file.mv('public/images/upload_images/'+file.name, function(err) {
+              file.mv('assets/uploads/pdf/'+file.name, function(err) {
                              
 	              
                   
@@ -91,14 +117,14 @@ app.post('/mycontent', function(req, res, next){
 					   });
                  });
           } else {
-            message = "This format is not allowed , please upload file with '.png','.gif','.jpg','.pdf'";
-            res.render('addcontent.ejs',{message: message});
+            req.flash('error', "This format is not allowed , please upload file with '.png','.gif','.jpg','.pdf'") 
+            res.redirect('/admin/content/addcontent')
           }
 
        }else{
 
         req.getConnection(function(error, conn) {
-                        var sql = "INSERT INTO `tbl_contents`(`class_id`,`subject_id`,`topic_id`,`file_type`,`content_title`,`content` ) VALUES ('" + cls + "','" + subject + "','" + topic + "','" + myfile_type + "','" + my_title + "','" + content_wise + "')";
+                        var sql = "INSERT INTO `tbl_contents`(`class_id`,`subject_id`,`topic_id`,`file_type`,`content_title`,`content_desc` ) VALUES ('" + cls + "','" + subject + "','" + topic + "','" + myfile_type + "','" + my_title + "','" + content_wise + "')";
 
                              conn.query(sql,function(err, result){
                              if (err) {
@@ -258,20 +284,22 @@ app.put('/editcontent/:id', function(req, res, next) {
 
 
 // DELETE Class
-app.delete('/delete/(:id)', function(req, res, next) {
-    var cont = { id: req.params.id }
-    
+app.get('/delete', function(req, res, next) {
+    var sbj = { id: req.params.id }
+
     req.getConnection(function(error, conn) {
-        conn.query('DELETE FROM content WHERE id = ' + req.params.id, cont, function(err, result) {
-            //if(err) throw err
+        conn.query('DELETE FROM  tbl_contents WHERE id = ' + req.query.id, sbj, function(err, result) {
+           // fs.unlinkSync('../../assets/uploads/pdf/');
             if (err) {
                 req.flash('error', err)
-                // redirect to users list page
-                res.redirect('/contents')
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                var obj = {succes : 0 , message : err}
+                  res.end(JSON.stringify(obj));
             } else {
-                req.flash('success', 'User deleted successfully! id = ' + req.params.id)
-                // redirect to users list page
-                res.redirect('/contents')
+                
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                var obj = {success : 1 , message : 'Content Deleted successfully'}
+                  res.end(JSON.stringify(obj));
             }
         })
     })

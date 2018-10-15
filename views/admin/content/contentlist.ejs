@@ -1,57 +1,189 @@
 <%- include ../../adminlayouts/header.ejs %>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-</script>
-<script type="text/javascript" async
-  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-  <div class="content-wrapper">
+
+
+<div class="content-wrapper">
     <section class="content-header">
-      <h1>
-        Content List
-      </h1>
+        <h1>
+          Content Management
+        </h1>
     </section>
-    <div class="box">
-            <div class="box-header">
-              <h3 class="box-title">Content displayed on site</h3>
+    <section class="content">
+    <div class="row">
+        <div class="col-md-8">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Add Content</h3>
             </div>
-            <!-- /.box-header -->
-            <div class="box-body no-padding">
-              <table class="table table-condensed">
-                <tbody id="tbody">
+            <% if (messages.error) { %>
+              <p style="color:red"><%- messages.error %></p>
+          <% } %>
+    
+          <% if (messages.success) { %>
+              <p style="color:green"><%- messages.success %></p>
+          <% } %>
+   
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Choose Board</label>
+                  <select class="form-control" name="board_id" id="board_id">
+                    <option disabled selected> Choose Board</option>
+                    <% if (locals.data) {
+                        %>
+                    <% locals.data.forEach(function(cl){
+                        %>
+                    <option value="<%= cl.id %>"><%= cl.board_name %></option>
+                    <% }) %>
+                    <% } %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Select Class</label>
+                  <select class="form-control" name="class_id" id="class_id">
+  
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputFile">Select Subject</label>
+                  <select class="form-control"name="subject_id" id="subject_id" >
+                   
+                    
+                  </select>
+                </div>
+                <div class="form-group">
+                  
+                    <label for="exampleInputPassword1">Select Topic</label>
+                    <select class="form-control" name="topic_id" id="topic_id">
+                    <select>
+                  
+                </div>
+               <!--  <div class="form-group">
+                  <label for="exampleInputEmail1">Content Title</label>
+                  <input type="text" name="my_title" class="form-control" required="true" placeholder="Enter Content Title">
+                </div> -->
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Choose File Type</label>&nbsp;
+                  <input type="radio" name="filetype" id="mytext" value="0" >Text&nbsp;
+                  <input type="radio" name="filetype" id="mypdf" value="1">PDF
+                </div>
+                
+               
+              </div>
+              <!-- /.box-body -->
+
+           
+            
+          </div>
+        </div>
+    </div>
+    <div class="box" >
+            <div class="box-body">
+              <table class="table table-bordered">
+                <thead >
                   <tr>
-                  <th style="width: 10px">#</th>
-                  <th>Title</th>
-                  <th>description</th>
-                  <th>Nano Category</th>
-                  <th>Sub Category</th>
-                  <th>Category</th>
-                  <th style="width: 40px">Added At</th>
+                  <th>Topic</th>
+                  <th>Topic Description</th>
+                  <th style="width: 40px">Action</th>
                 </tr>
+              </thead>
+              <tbody id="content_list">
               </tbody>
             </table>
             </div>
-            <div id="desc">
-            </div>
-            <!-- /.box-body -->
           </div>
-  </div>
 </div>
-
+</section>
 
 
 <%- include ../../adminlayouts/footer.ejs %>
-<script>
-$.get('/admin/get_content',function(res){
-  $.each(res , function(key , val){
-    $('#tbody').append('<tr><td>'+val.id+'</td><td>'+val.title+'</td><td id="desc'+key+'">'+val.description+'</td><td>'+val.nano_category+'</td><td>'+val.sub_category+'</td><td>'+val.category+'</td><td>'+val.created_at+'</td></tr>');
-  $('#desc'+key).html($('#desc'+key).text());
-  })
-},'json');
 
-var notWorking = function(html) {
-    var el = document.createElement('div');
-    el.innerHTML = html;
-    return el.childNodes[0];
-}
+<script>
+$('#show_pdf').css('display','none');
+$('#show_content').css('display','none');
+$(document).on('click','#mytext', function(){
+
+ $('#show_content').css('display','block');
+ $('#show_pdf').css('display','none');
+});
+
+$(document).on('click','#mypdf', function(){
+
+$('#show_pdf').css('display','block');
+$('#show_content').css('display','none');
+});
+
+
+$(document).on('change','#board_id',function(){
+  var html = '';
+  $.get('/admin/class/show_class?id='+$(this).val(),function(res){
+    $.each(res,function(key,val){
+      html += '<option value="'+val.id+'">'+val.class_name+'</option>';
+    })
+      $('#class_id').html(html)
+  })
+})
+
+$(document).on('change','#class_id',function(){
+    
+    var html = '';
+    $.get('/admin/subject/show_subject?id='+$(this).val(),function(res){
+      $.each(res,function(key,val){
+        html += '<option value="'+val.id+'">'+val.subject_name+'</option>';
+      })
+        $('#subject_id').html(html)
+    })
+  })
+
+
+
+$(document).on('change','#subject_id',function(){
+  var html = '';
+  $.get('/admin/topic/show_topic?id='+$(this).val(),function(res){
+    $.each(res,function(key,val){
+      html += '<option value="'+val.id+'">'+val.topic_name+'</option>';;
+    })
+      $('#topic_id').html(html)
+  })
+})
+$(document).on('click','#mytext',function(){
+  var html = '';
+  $.get('/admin/content/showfile?id='+$('#topic_id').val(),function(res){
+    $.each(res,function(key,val){
+      html += '<tr id="dlt'+val.id+'"><td>'+val.content_title+'</td><td>'+val.content_desc+'</td><td><button class="btn btn-info dlsub" data-id="'+val.id+'">Delete</td></tr>';
+    })
+      $('#content_list').html(html)
+  })
+})
+
+$(document).on('click','#mypdf',function(){
+  var html = '';
+  $.get('/admin/content/showpdf?id='+$('#topic_id').val(),function(res){
+    $.each(res,function(key,val){
+      html += '<tr id="delets'+val.id+'"><td>'+val.content_title+'</td><td><a href="../../assets/uploads/pdf/'+val.file+'" target="_blank">Click Here to See</a></td><td><button class="btn btn-info blsub" data-id="'+val.id+'">Delete</td></tr>';
+    })
+      $('#content_list').html(html)
+  })
+})
+
+$(document).on('click','.dlsub',function(){
+  var a =$(this)
+  $.get('/admin/content/delete?id='+$(this).data('id'),function(res){
+    alert(res.message)
+    if(res.success == 1){
+     $('#dlt'+a.data('id')).remove()
+    }
+
+  },'json')
+})
+
+
+$(document).on('click','.blsub',function(){
+  var a =$(this)
+  $.get('/admin/content/delete?id='+$(this).data('id'),function(res){
+    alert(res.message)
+    if(res.success == 1){
+     $('#delets'+a.data('id')).remove()
+    }
+
+  },'json')
+})
 </script>

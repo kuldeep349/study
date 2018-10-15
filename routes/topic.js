@@ -2,6 +2,7 @@ var express = require('express')
 var app = express()
 
  
+
 // SHOW LIST OF Topiclist
 app.get('/topic-list', function(req, res, next) {
     req.getConnection(function(error, conn) {
@@ -23,6 +24,8 @@ app.get('/topic-list', function(req, res, next) {
         })
     })
 })
+
+
  
 // SHOW ADD Class FORM
 app.get('/addtopic', function(req, res, next){

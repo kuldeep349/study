@@ -13,5 +13,5 @@ var config = {
 
  
 }
-console.log('database connected');
+
 module.exports = config
