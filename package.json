@@ -12,6 +12,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^10.1.0",
     "@ckeditor/ckeditor5-engine": "^10.1.0",
+    "async": "^2.6.1",
     "await": "^0.2.6",
     "body-parser": "^1.18.3",
     "bootstrap": "^4.1.1",

@@ -1,62 +1,42 @@
 var express = require('express')
 var app = express()
-
+const {database} = require('../db.js')
  
 
-// SHOW LIST OF Topiclist
-app.get('/topic-list', function(req, res, next) {
-    req.getConnection(function(error, conn) {
-        conn.query('SELECT * FROM tbl_boards ORDER BY id DESC',function(err, rows, fields) {
-            //if(err) throw err
-            if (err) {
-                req.flash('error', err)
-                res.render('admin/topic/topic-list', {
-                    title: 'Topic List', 
-                    data: ''
-                })
-            } else {
-                // render to views/user/list.ejs template file
-                res.render('admin/topic/topic-list', {
-                    title: 'Topic List', 
-                    data: rows
-                })
-            }
-        })
+// SHOW LIST OF BOARDS ON TOPIC LIST PAGE
+app.get('/topic-list', async function(req, res, next ) {
+    var query = 'SELECT * FROM tbl_boards ORDER BY id DESC';
+    results = await database.query(query, [] );
+    //console.log(results)
+    res.render('admin/topic/topic-list', {
+        title: 'Topic List', 
+        data: JSON.parse(results)
     })
+    
+    
 })
 
-
  
-// SHOW ADD Class FORM
-app.get('/addtopic', function(req, res, next){
-    req.getConnection(function(error, conn) {
-        conn.query('SELECT * FROM tbl_boards ORDER BY id DESC',function(err, rows, fields) {
-            //if(err) throw err
-            if (err) {
-                req.flash('error', err)
-                res.render('admin/topic/addtopic', {
-                    title: 'Add Topic',
-                    data:''
-                })
-            } else {
-              res.render('admin/topic/addtopic', {
-                  title: 'Add Subject',
-                  data:rows
-              })
-            }
-        })
+// SHOW LIST OF BOARDS ON ADD TOPIC PAGE
+app.get('/addtopic', async function(req, res, next){
+    var query = 'SELECT * FROM tbl_boards ORDER BY id DESC';
+    results = await database.query(query, [] );
+    //console.log(results)
+    res.render('admin/topic/addtopic', {
+        title: 'Topic List', 
+        data: JSON.parse(results)
     })
   
   })
-
-  app.get('/show_topic', function(req, res, next) {
-    req.getConnection(function(error, conn) {
-      var query = 'SELECT * FROM tbl_topic where subject_id = '+req.query.id;
-        conn.query(query,function(err, rows, fields) {
+// SHOW LIST OF TOPICS WITH DESCRIPTION
+  app.get('/show_topic', async function(req, res, next) {
+      var query = 'SELECT * FROM tbl_topic where subject_id = ' + req.query.id;
+       results = await database.query(query, [] );
+         console.log(results)
           res.writeHead(200, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify(rows));
-        })
-    })
+            res.end(results);
+      
+   
 })
 
 
@@ -68,7 +48,7 @@ app.get('/addtopic', function(req, res, next){
 
  
 // ADD NEW Content POST ACTION
-app.post('/addtopic', function(req, res, next){    
+app.post('/addtopic', async function(req, res, next){    
     req.assert('subject_id', 'Field Name is required').notEmpty() 
     req.assert('topic_name', 'Topic Name is required').notEmpty()  
     req.assert('text_name', 'Description is required').notEmpty()   
@@ -84,22 +64,21 @@ app.post('/addtopic', function(req, res, next){
             
         }
         
-        req.getConnection(function(error, conn) {
-            conn.query('INSERT INTO tbl_topic SET ?', fld, function(err, result) {
-               
-                if (err) {
-                    req.flash('error', err)
-                    res.redirect('/topic')
+            var query = 'INSERT INTO tbl_topic SET ?'
+            results = await database.query(query, [fld] );
+                if (results) {
+                    req.flash('success', 'Topic added successfully!')
+                    res.redirect('/admin/topic/addtopic') 
                         
                 } else {                
-                    req.flash('success', 'Topic added successfully!')
-                    res.redirect('/admin/topic/addtopic')
+                    req.flash('error', err)
+                    res.redirect('/topic')   
                         
                 }
-            })
-        })
-    }
-    else {   
+           
+       
+           }
+        else {   
         var error_msg = ''
         errors.forEach(function(error) {
             error_msg += error.msg + '<br>'
@@ -109,126 +88,128 @@ app.post('/addtopic', function(req, res, next){
     }
 })
  
-// SHOW EDIT USER FORM
-app.get('/editfield/(:id)', function(req, res, next){
-    req.getConnection(function(error, conn) {
-        conn.query('SELECT * FROM fields WHERE id = ' + req.params.id, function(err, rows, fields) {
-            if(err) throw err
+// // SHOW EDIT USER FORM
+// app.get('/editfield/(:id)', function(req, res, next){
+//     req.getConnection(function(error, conn) {
+//         conn.query('SELECT * FROM fields WHERE id = ' + req.params.id, function(err, rows, fields) {
+//             if(err) throw err
             
-            // if class not found
-            if (rows.length <= 0) {
-                req.flash('error', 'Field not found with id = ' + req.params.id)
-                res.redirect('/fields')
-            }
-            else { // if class found
-                // render to views/classes/editclass.ejs template file
-                res.render('field/editfield', {
-                    title: 'Edit Field', 
-                    //data: rows[0],
-                    id: rows[0].id,
-                    field_name: rows[0].field_name,
-                    })
-            }            
-        })
-    })
-})
+//             // if class not found
+//             if (rows.length <= 0) {
+//                 req.flash('error', 'Field not found with id = ' + req.params.id)
+//                 res.redirect('/fields')
+//             }
+//             else { // if class found
+//                 // render to views/classes/editclass.ejs template file
+//                 res.render('field/editfield', {
+//                     title: 'Edit Field', 
+//                     //data: rows[0],
+//                     id: rows[0].id,
+//                     field_name: rows[0].field_name,
+//                     })
+//             }            
+//         })
+//     })
+// })
  
-// EDIT classes POST ACTION
-app.put('/editfield/:id', function(req, res, next) {
-    req.assert('field_name', 'Field Name is required').notEmpty()           //Validate name
+// // EDIT classes POST ACTION
+// app.put('/editfield/:id', function(req, res, next) {
+//     req.assert('field_name', 'Field Name is required').notEmpty()           //Validate name
     
-    var errors = req.validationErrors()
+//     var errors = req.validationErrors()
     
-    if( !errors ) {   //No errors were found.  Passed Validation!
+//     if( !errors ) {   //No errors were found.  Passed Validation!
         
-        /********************************************
-         * Express-validator module
+//         /********************************************
+//          * Express-validator module
          
-        req.body.comment = 'a <span>comment</span>';
-        req.body.username = '   a user    ';
+//         req.body.comment = 'a <span>comment</span>';
+//         req.body.username = '   a user    ';
  
-        req.sanitize('comment').escape(); // returns 'a &lt;span&gt;comment&lt;/span&gt;'
-        req.sanitize('username').trim(); // returns 'a user'
-        ********************************************/
-        var fld = {
-            field_name: req.sanitize('field_name').escape().trim(),
-            }
+//         req.sanitize('comment').escape(); // returns 'a &lt;span&gt;comment&lt;/span&gt;'
+//         req.sanitize('username').trim(); // returns 'a user'
+//         ********************************************/
+//         var fld = {
+//             field_name: req.sanitize('field_name').escape().trim(),
+//             }
         
-        req.getConnection(function(error, conn) {
-            console.log(req.params);
+//         req.getConnection(function(error, conn) {
+//             console.log(req.params);
 
-            conn.query('UPDATE fields SET ? WHERE id = ' + req.params.id, fld, function(err, result) {
-                //if(err) throw err
-                if (err) {
-                    req.flash('error', err)
+//             conn.query('UPDATE fields SET ? WHERE id = ' + req.params.id, fld, function(err, result) {
+//                 //if(err) throw err
+//                 if (err) {
+//                     req.flash('error', err)
                     
-                    // render to views/user/add.ejs
-                    res.render('field/editfield', {
-                        title: 'Edit Field',
-                        field_name: req.body.field_name,
-                        })
-                } else {
-                    req.flash('success', 'Data updated successfully!')
+//                     // render to views/user/add.ejs
+//                     res.render('field/editfield', {
+//                         title: 'Edit Field',
+//                         field_name: req.body.field_name,
+//                         })
+//                 } else {
+//                     req.flash('success', 'Data updated successfully!')
                     
-                    conn.query('SELECT * FROM fields ORDER BY id DESC',function(err, rows, fields) {
-                        //if(err) throw err
-                        if (err) {
-                            req.flash('error', err)
-                            res.render('field/fieldlist', {
-                                title: 'Field List', 
-                                data: ''
-                            })
-                        } else {
-                            // render to views/user/list.ejs template file
-                            res.render('field/fieldlist', {
-                                title: 'Field List', 
-                                data: rows
-                            })
-                        }
-                    })
-                }
-            })
-        })
-    }
-    else {   //Display errors to user
-        var error_msg = ''
-        errors.forEach(function(error) {
-            error_msg += error.msg + '<br>'
-        })
-        req.flash('error', error_msg)
+//                     conn.query('SELECT * FROM fields ORDER BY id DESC',function(err, rows, fields) {
+//                         //if(err) throw err
+//                         if (err) {
+//                             req.flash('error', err)
+//                             res.render('field/fieldlist', {
+//                                 title: 'Field List', 
+//                                 data: ''
+//                             })
+//                         } else {
+//                             // render to views/user/list.ejs template file
+//                             res.render('field/fieldlist', {
+//                                 title: 'Field List', 
+//                                 data: rows
+//                             })
+//                         }
+//                     })
+//                 }
+//             })
+//         })
+//     }
+//     else {   //Display errors to user
+//         var error_msg = ''
+//         errors.forEach(function(error) {
+//             error_msg += error.msg + '<br>'
+//         })
+//         req.flash('error', error_msg)
         
-        /**
-         * Using req.body.name 
-         * because req.param('name') is deprecated
-         */ 
-        res.render('field/editfield', { 
-            title: 'Edit Field',            
+//         /**
+//          * Using req.body.name 
+//          * because req.param('name') is deprecated
+//          */ 
+//         res.render('field/editfield', { 
+//             title: 'Edit Field',            
             
-            field_name: req.body.field_name,
-            })
-    }
-})
+//             field_name: req.body.field_name,
+//             })
+//     }
+// })
  
 // DELETE Class
-app.get('/delete', function(req, res, next) {
+app.get('/delete', async function(req, res, next) {
     var sbj = { id: req.params.id }
 
-    req.getConnection(function(error, conn) {
-        conn.query('DELETE FROM tbl_topic WHERE id = ' + req.query.id, sbj, function(err, result) {
+         var query = 'DELETE FROM tbl_topic WHERE id = ' + req.query.id; ;
+             results = await database.query(query, [sbj] );
+
             //if(err) throw err
-            if (err) {
-                req.flash('error', err)
-                res.writeHead(200, {'Content-Type': 'application/json'});
-                var obj = {succes : 0 , message : err}
-                  res.end(JSON.stringify(obj));
-            } else {
-                req.flash('success', 'User deleted successfully! id = ' + req.params.id)
+            if (results) {
+               // req.flash('success', 'User deleted successfully! id = ' + req.params.id)
                 res.writeHead(200, {'Content-Type': 'application/json'});
                 var obj = {success : 1 , message : 'Topic Deleted successfully'}
                   res.end(JSON.stringify(obj));
+            } else {
+              
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                var obj = {success : 1 , message : 'Topic Not Deleted'}
+                  res.end(JSON.stringify(obj));
+               
             }
-        })
-    })
+       
+   
 })
  
 module.exports = app

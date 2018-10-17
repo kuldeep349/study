@@ -67,6 +67,7 @@ app.get('/show_subject', function(req, res, next) {
 app.post('/addsubject', function(req, res, next){
     req.assert('class_id', 'Class ID is required').notEmpty()
     req.assert('subject_name', 'Subject Name is required').notEmpty()
+    req.assert('board_id', 'Board must be Selected').notEmpty()
 
     var errors = req.validationErrors()
 
@@ -74,6 +75,7 @@ app.post('/addsubject', function(req, res, next){
         var sbj = {
             class_id: req.sanitize('class_id').escape().trim(),
             subject_name: req.sanitize('subject_name').escape().trim(),
+            board_id: req.sanitize('board_id').escape().trim(),
         }
 
         req.getConnection(function(error, conn) {

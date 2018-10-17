@@ -1,6 +1,6 @@
 var express = require('express')
 var app = express()
-
+const {database} = require('../db.js')
 //var formidable = require('formidable');
  
 // SHOW LIST OF classes

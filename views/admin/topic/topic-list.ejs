@@ -124,7 +124,7 @@ $(document).on('change','#subject_id',function(){
   var html = '';
   $.get('/admin/topic/show_topic?id='+$(this).val(),function(res){
     $.each(res,function(key,val){
-      html += '<tr><td>'+val.topic_name+'</td><td>'+val.description+'</td><td><button class="btn btn-info dlsub" data-id="'+val.id+'">Delete</td></tr>';
+      html += '<tr id="topic_delete'+val.id+'"><td>'+val.topic_name+'</td><td>'+val.description+'</td><td><button class="btn btn-info dlsub" data-id="'+val.id+'">Delete</td></tr>';
     })
       $('#subject_list').html(html)
   })
@@ -133,7 +133,7 @@ $(document).on('click','.dlsub',function(){
   $.get('/admin/topic/delete?id='+$(this).data('id'),function(res){
     alert(res.message)
     if(res.success == 1){
-      location.reload()
+    $('#topic_delete'+a.data('id')).remove()
     }
 
   },'json')
