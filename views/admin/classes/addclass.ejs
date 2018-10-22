@@ -25,6 +25,7 @@ including header content which is common for all pages
               <label class="control-label col-sm-2" for="class_id">Select Board</label>
               <div class="col-sm-10">
               <select class="form-control" name="board_id">
+                <option disabled selected> Choose Board</option>
                 <% if (locals.data) {
                     %>
                 <% locals.data.forEach(function(cl){

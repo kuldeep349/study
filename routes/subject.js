@@ -1,59 +1,40 @@
 var express = require('express')
 var app = express()
+const {database} = require('../db.js')
 
-
-// SHOW LIST OF classes
-app.get('/subject-list', function(req, res, next) {
-    req.getConnection(function(error, conn) {
-        conn.query('SELECT * FROM tbl_boards ORDER BY id DESC',function(err, rows, fields) {
-            //if(err) throw err
-            if (err) {
-                req.flash('error', err)
-                res.render('admin/subjects/subjectlist', {
-                    title: 'Subject List',
-                    data: ''
-                })
-            } else {
-                // render to views/user/list.ejs template file
-                res.render('admin/subjects/subjectlist', {
-                    title: 'Subject List',
-                    data: rows
-                })
-            }
-        })
-    })
-})
-
-// SHOW ADD Class FORM
-app.get('/addsubject', function(req, res, next){
-  req.getConnection(function(error, conn) {
-      conn.query('SELECT * FROM tbl_boards ORDER BY id DESC',function(err, rows, fields) {
-          //if(err) throw err
-          if (err) {
-              req.flash('error', err)
-              res.render('admin/subjects/addsubject', {
-                  title: 'Add Subject',
-                  data:''
-              })
-          } else {
-            res.render('admin/subjects/addsubject', {
-                title: 'Add Subject',
-                data:rows
-            })
-          }
+// SHOW LIST OF Subjects
+app.get('/subject-list', async function(req, res, next) {
+    
+        var query = 'SELECT * FROM tbl_boards ORDER BY id DESC';
+        results = await database.query(query, [] );
+        res.render('admin/subjects/subjectlist', {
+        title: 'Subject List',
+        data: JSON.parse(results)
       })
-  })
 
 })
 
-app.get('/show_subject', function(req, res, next) {
-    req.getConnection(function(error, conn) {
+// SHOW ADD SUBJECT FORM
+app.get('/addsubject', async function(req, res, next){
+  
+     var query = 'SELECT * FROM tbl_boards ORDER BY id DESC';
+     results = await database.query(query, [] );
+          
+      res.render('admin/subjects/addsubject', {
+      title: 'Add Subject',
+      data: JSON.parse(results)
+     })
+         
+})
+
+app.get('/show_subject', async function(req, res, next) {
+  
       var query = 'SELECT * FROM tbl_subjects where class_id = '+req.query.id;
-        conn.query(query,function(err, rows, fields) {
-          res.writeHead(200, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify(rows));
-        })
-    })
+       results = await database.query(query, [] );
+          // res.writeHead(200, {'Content-Type': 'application/json'});
+          res.send(results);
+        
+   
 })
 
 
@@ -64,7 +45,7 @@ app.get('/show_subject', function(req, res, next) {
 
 
 // ADD NEW Content POST ACTION
-app.post('/addsubject', function(req, res, next){
+app.post('/addsubject',async function(req, res, next){
     req.assert('class_id', 'Class ID is required').notEmpty()
     req.assert('subject_name', 'Subject Name is required').notEmpty()
     req.assert('board_id', 'Board must be Selected').notEmpty()
@@ -78,17 +59,17 @@ app.post('/addsubject', function(req, res, next){
             board_id: req.sanitize('board_id').escape().trim(),
         }
 
-        req.getConnection(function(error, conn) {
-            conn.query('INSERT INTO tbl_subjects SET ?', sbj, function(err, result) {
-                if (err) {
-                    req.flash('error', err)
-                    res.redirect('/subject')
-                } else {
+      
+            var query = 'INSERT INTO tbl_subjects SET ?';
+            results = await database.query(query, [sbj] );
+                if (results) {
                     req.flash('success', 'Subject added successfully!')
                       res.redirect('/admin/subject/addsubject')
+                   
+                } else {
+                    req.flash('error','Subject addition failed! ')
+                     res.redirect('/admin/subject/addsubjects')
                 }
-            })
-        })
     }
     else {   //Display errors to user
         var error_msg = ''
@@ -100,139 +81,138 @@ app.post('/addsubject', function(req, res, next){
     }
 })
 
-// SHOW EDIT USER FORM
-app.get('/editsubject/(:id)', function(req, res, next){
-    req.getConnection(function(error, conn) {
-        conn.query('SELECT * FROM subjects WHERE id = ' + req.params.id, function(err, rows, fields) {
-            if(err) throw err
+// // SHOW EDIT USER FORM
+// app.get('/editsubject/(:id)', function(req, res, next){
+//     req.getConnection(function(error, conn) {
+//         conn.query('SELECT * FROM subjects WHERE id = ' + req.params.id, function(err, rows, fields) {
+//             if(err) throw err
 
-            // if class not found
-            if (rows.length <= 0) {
-                req.flash('error', 'Subject not found with id = ' + req.params.id)
-                res.redirect('/subject')
-            }
-            else { // if class found
-                // render to views/classes/editclass.ejs template file
-                res.render('subjects/editsubject', {
-                    title: 'Edit Subject',
-                    //data: rows[0],
-                    id: rows[0].id,
-                    subject_id:rows[0].subject_id,
-                    subject_name: rows[0].subject_name,
-                    })
-            }
-        })
-    })
-})
+//             // if class not found
+//             if (rows.length <= 0) {
+//                 req.flash('error', 'Subject not found with id = ' + req.params.id)
+//                 res.redirect('/subject')
+//             }
+//             else { // if class found
+//                 // render to views/classes/editclass.ejs template file
+//                 res.render('subjects/editsubject', {
+//                     title: 'Edit Subject',
+//                     //data: rows[0],
+//                     id: rows[0].id,
+//                     subject_id:rows[0].subject_id,
+//                     subject_name: rows[0].subject_name,
+//                     })
+//             }
+//         })
+//     })
+// })
 
 // EDIT classes POST ACTION
-app.put('/editsubject/:id', function(req, res, next) {
-    req.assert('subject_id','Subject Id is required').notEmpty()
-    req.assert('subject_name','Subject Name is required').notEmpty()           //Validate name
+// app.put('/editsubject/:id', function(req, res, next) {
+//     req.assert('subject_id','Subject Id is required').notEmpty()
+//     req.assert('subject_name','Subject Name is required').notEmpty()           //Validate name
 
-    var errors = req.validationErrors()
+//     var errors = req.validationErrors()
 
-    if( !errors ) {   //No errors were found.  Passed Validation!
+//     if( !errors ) {   //No errors were found.  Passed Validation!
 
-        /********************************************
-         * Express-validator module
+//         /********************************************
+//          * Express-validator module
 
-        req.body.comment = 'a <span>comment</span>';
-        req.body.username = '   a user    ';
+//         req.body.comment = 'a <span>comment</span>';
+//         req.body.username = '   a user    ';
 
-        req.sanitize('comment').escape(); // returns 'a &lt;span&gt;comment&lt;/span&gt;'
-        req.sanitize('username').trim(); // returns 'a user'
-        ********************************************/
-        var sbj = {
-            subject_id:req.sanitize('subject_id').escape().trim(),
-            subject_name: req.sanitize('subject_name').escape().trim(),
-            }
+//         req.sanitize('comment').escape(); // returns 'a &lt;span&gt;comment&lt;/span&gt;'
+//         req.sanitize('username').trim(); // returns 'a user'
+//         ********************************************/
+//         var sbj = {
+//             subject_id:req.sanitize('subject_id').escape().trim(),
+//             subject_name: req.sanitize('subject_name').escape().trim(),
+//             }
 
-        req.getConnection(function(error, conn) {
-            console.log(req.params);
+//         req.getConnection(function(error, conn) {
+//             console.log(req.params);
 
-            conn.query('UPDATE subjects SET ? WHERE id = ' + req.params.id, sbj, function(err, result) {
-                //if(err) throw err
-                if (err) {
-                    req.flash('error', err)
+//             conn.query('UPDATE subjects SET ? WHERE id = ' + req.params.id, sbj, function(err, result) {
+//                 //if(err) throw err
+//                 if (err) {
+//                     req.flash('error', err)
 
-                    // render to views/user/add.ejs
-                    res.render('subject/editsubject', {
-                        title: 'Edit Subject',
-                        subject_id:req.body.subject_id,
-                        subject_name: req.body.subject_name,
-                        })
-                } else {
-                    req.flash('success', 'Data updated successfully!')
+//                     // render to views/user/add.ejs
+//                     res.render('subject/editsubject', {
+//                         title: 'Edit Subject',
+//                         subject_id:req.body.subject_id,
+//                         subject_name: req.body.subject_name,
+//                         })
+//                 } else {
+//                     req.flash('success', 'Data updated successfully!')
 
-                    conn.query('SELECT * FROM subjects ORDER BY id DESC',function(err, rows, fields) {
-                        //if(err) throw err
-                        if (err) {
-                            req.flash('error', err)
-                            res.render('subjects/subjectlist', {
-                                title: 'Subject List',
-                                data: ''
-                            })
-                        } else {
-                            // render to views/user/list.ejs template file
-                            res.render('subjects/subjectlist', {
-                                title: 'Subject List',
-                                data: rows
-                            })
-                        }
-                    })
-                }
-            })
-        })
-    }
-    else {   //Display errors to user
-        var error_msg = ''
-        errors.forEach(function(error) {
-            error_msg += error.msg + '<br>'
-        })
-        req.flash('error', error_msg)
+//                     conn.query('SELECT * FROM subjects ORDER BY id DESC',function(err, rows, fields) {
+//                         //if(err) throw err
+//                         if (err) {
+//                             req.flash('error', err)
+//                             res.render('subjects/subjectlist', {
+//                                 title: 'Subject List',
+//                                 data: ''
+//                             })
+//                         } else {
+//                             // render to views/user/list.ejs template file
+//                             res.render('subjects/subjectlist', {
+//                                 title: 'Subject List',
+//                                 data: rows
+//                             })
+//                         }
+//                     })
+//                 }
+//             })
+//         })
+//     }
+//     else {   //Display errors to user
+//         var error_msg = ''
+//         errors.forEach(function(error) {
+//             error_msg += error.msg + '<br>'
+//         })
+//         req.flash('error', error_msg)
 
-        /**
-         * Using req.body.name
-         * because req.param('name') is deprecated
-         */
-        res.render('subjects/editsubject', {
-            title: 'Edit Subject',
+//         /**
+//          * Using req.body.name
+//          * because req.param('name') is deprecated
+//          */
+//         res.render('subjects/editsubject', {
+//             title: 'Edit Subject',
 
-            subject_id:req.body.subject_id,
-            subject_name: req.body.subject_name,
-            })
-    }
-})
+//             subject_id:req.body.subject_id,
+//             subject_name: req.body.subject_name,
+//             })
+//     }
+// })
 
-// DELETE Class
-app.get('/delete', function(req, res, next) {
+// DELETE Subject
+app.get('/delete', async function(req, res, next) {
     var sbj = { id: req.params.id }
 
-    req.getConnection(function(error, conn) {
-        conn.query('DELETE FROM tbl_subjects WHERE id = ' + req.query.id, sbj, function(err, result) {
-            //if(err) throw err
-            if (err) {
-                req.flash('error', err)
+    
+        var query = 'DELETE FROM tbl_subjects WHERE id = ' + req.query.id;
+        results = await database.query(query, [sbj] );
+            if (results) {
                 res.writeHead(200, {'Content-Type': 'application/json'});
-                var obj = {succes : 0 , message : err}
+                var obj = {success : 1 , message : 'Subject Deleted successfully'}
                   res.end(JSON.stringify(obj));
             } else {
-                req.flash('success', 'User deleted successfully! id = ' + req.params.id)
+
                 res.writeHead(200, {'Content-Type': 'application/json'});
-                var obj = {succes : 1 , message : 'Subject Deleted successfully'}
+                var obj = {success : 0 , message : 'Subject Not Deleted'}
                   res.end(JSON.stringify(obj));
             }
-        })
-    })
+        
+    
 })
-app.get('/show_subjects', function(req, res, next) {
-    req.getConnection(function(error, conn) {
-      var query = 'SELECT * FROM tbl_subjects where class_id = '+req.query.id;
-        conn.query(query,function(err, rows, fields) {
-          res.writeHead(200, {'Content-Type': 'application/json'});
-            res.end(JSON.stringify(rows));
-        })
-    })
-})
+// app.get('/show_subjects', function(req, res, next) {
+//     req.getConnection(function(error, conn) {
+//       var query = 'SELECT * FROM tbl_subjects where class_id = '+req.query.id;
+//         conn.query(query,function(err, rows, fields) {
+//           res.writeHead(200, {'Content-Type': 'application/json'});
+//             res.end(JSON.stringify(rows));
+//         })
+//     })
+// })
 module.exports = app

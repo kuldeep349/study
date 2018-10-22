@@ -59,7 +59,7 @@ including header content which is common for all pages
 
                   <td>
                       <div style="float:left">
-                       <input type="button" class="btn btn-default" onclick="location.href='/reb/class/editclass/<%= cl.id %>';" value="Edit"/t>
+                       <input type="button" class="btn btn-default" onclick="location.href='/admin/classes/editclass/<%= cl.id %>';" value="Edit"/t>
                           <form method="post" action="/admin/class/delete/<%= cl.id %>" style="float:right">
                               <input type="submit" class="btn btn-default" name="delete" value='Delete' onClick="return confirm('Are you sure you want to delete?')" />
                               <input type="hidden" name="_method" value="DELETE" />

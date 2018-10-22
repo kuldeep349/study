@@ -100,7 +100,7 @@ $(document).on('change','#board_id',function(){
       html += '<option value="'+val.id+'">'+val.class_name+'</option>';
     })
       $('#class_id').html(html)
-  })
+  },'json')
 })
 
 $(document).on('change','#class_id',function(){
@@ -111,7 +111,7 @@ $(document).on('change','#class_id',function(){
         html += '<option value="'+val.id+'">'+val.subject_name+'</option>';
       })
         $('#subject_id').html(html)
-    })
+    },'json')
   })
 
 
@@ -130,6 +130,9 @@ $(document).on('change','#subject_id',function(){
   })
 })
 $(document).on('click','.dlsub',function(){
+  var x = confirm("Are You Sure!");
+  if(x == true){
+  var a =$(this)
   $.get('/admin/topic/delete?id='+$(this).data('id'),function(res){
     alert(res.message)
     if(res.success == 1){
@@ -137,5 +140,9 @@ $(document).on('click','.dlsub',function(){
     }
 
   },'json')
+  }else{
+
+ return false; 
+}
 })
 </script>

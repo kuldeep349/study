@@ -67,24 +67,33 @@ $(document).on('change','#board_id',function(){
       html += '<option value="'+val.id+'">'+val.class_name+'</option>';
     })
       $('#class_id').html(html)
-  })
+  },'json')
 })
 $(document).on('change','#class_id',function(){
   var html = '';
-  $.get('/admin/subject/show_subjects?id='+$(this).val(),function(res){
+  $.get('/admin/subject/show_subject?id='+$(this).val(),function(res){
     $.each(res,function(key,val){
-      html += '<tr><td>'+val.subject_name+'</td><td><button class="btn btn-info dlsub" data-id="'+val.id+'">Delete</td></tr>';
+      html += '<tr id="dlt'+val.id+'"><td>'+val.subject_name+'</td><td><button class="btn btn-info dlsub" data-id="'+val.id+'">Delete</td></tr>';
     })
       $('#subject_list').html(html)
-  })
+  },'json')
 })
 $(document).on('click','.dlsub',function(){
+ var x = confirm("Are You Sure!");
+ if(x == true){
+
+  var a =$(this)
   $.get('/admin/subject/delete?id='+$(this).data('id'),function(res){
     alert(res.message)
     if(res.success == 1){
-      location.reload()
+    $('#dlt'+a.data('id')).remove()
     }
 
   },'json')
+
+ }else{
+
+   return false;
+ } 
 })
 </script>

@@ -32,7 +32,7 @@ app.get('/addtopic', async function(req, res, next){
   app.get('/show_topic', async function(req, res, next) {
       var query = 'SELECT * FROM tbl_topic where subject_id = ' + req.query.id;
        results = await database.query(query, [] );
-         console.log(results)
+        // console.log(results)
           res.writeHead(200, {'Content-Type': 'application/json'});
             res.end(results);
       
@@ -64,15 +64,15 @@ app.post('/addtopic', async function(req, res, next){
             
         }
         
-            var query = 'INSERT INTO tbl_topic SET ?'
+            var query = 'INSERT INTO tbl_topic SET ?';
             results = await database.query(query, [fld] );
                 if (results) {
                     req.flash('success', 'Topic added successfully!')
                     res.redirect('/admin/topic/addtopic') 
                         
                 } else {                
-                    req.flash('error', err)
-                    res.redirect('/topic')   
+                    req.flash('error', 'Topic Addition Failed')
+                    res.redirect('/admin/topic/addtopic')   
                         
                 }
            
@@ -192,7 +192,7 @@ app.post('/addtopic', async function(req, res, next){
 app.get('/delete', async function(req, res, next) {
     var sbj = { id: req.params.id }
 
-         var query = 'DELETE FROM tbl_topic WHERE id = ' + req.query.id; ;
+         var query = 'DELETE FROM tbl_topic WHERE id = ' + req.query.id; 
              results = await database.query(query, [sbj] );
 
             //if(err) throw err
@@ -204,7 +204,7 @@ app.get('/delete', async function(req, res, next) {
             } else {
               
                 res.writeHead(200, {'Content-Type': 'application/json'});
-                var obj = {success : 1 , message : 'Topic Not Deleted'}
+                var obj = {success : 0 , message : 'Topic Not Deleted'}
                   res.end(JSON.stringify(obj));
                
             }
