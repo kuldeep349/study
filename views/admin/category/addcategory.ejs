@@ -54,7 +54,7 @@
           %>
           <li class="list-group-item d-flex justify-content-between align-items-center">
               <%= cat.name %>
-              <span class="badge badge-danger badge-pill"><a  href="remove_category/?id=<%= cat.id %>">Delete</a></span>
+              <span class="badge badge-danger badge-pill" onClick="return confirm('Are you sure you want to delete?')"><a  href="/admin/category/remove_category/?id=<%= cat.id %>" >Delete</a></span>
           </li>
           <% }) %>
           <% } %>

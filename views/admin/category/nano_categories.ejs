@@ -4,7 +4,7 @@
   <div class="content-wrapper">
     <section class="content-header">
       <h1>
-        Add Sub Category
+        Add Nano Category
       </h1>
       <!-- <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -27,11 +27,11 @@
             </div> -->
             <!-- /.box-header -->
             <!-- form start -->
-            <form role="form" name="" action="/admin/add-nano-category" method="post">
+            <form role="form" name="" action="/admin/category/add-nano-category" method="post">
               <div class="box-body">
                 <div class="form-group">
                   <label for="exampleInputEmail1">Choose Category</label>
-                  <select class="form-control" name="category_id" id="">
+                  <select class="form-control" name="category_id" id="mycate">
 
                   <option value="">Choose Category</option>
 
@@ -47,13 +47,13 @@
                   </select>
                 </div>
                 <div class="form-group">
-                 <label for="exampleInputEmail1">Sub Category Name</label>
+                 <label for="exampleInputEmail1">Choose Sub Category</label>
                  <select class="form-control" id="sub_cat" name="sub_category_id">
 
                  </select>
                </div>
                  <div class="form-group">
-                  <label for="exampleInputEmail1">Sub Category Name</label>
+                  <label for="exampleInputEmail1">Enter Nano Category</label>
                   <input type="text" class="form-control" name="name" id="exampleInputEmail1" placeholder="Enter Sub Category Name" required>
                 </div>
                 <div class="box-footer">
@@ -66,7 +66,7 @@
   </div>
   <div class="col-md-6">
       <ul class="list-group">
-      <li href="#" class="list-group-item active">Sub Categories</li>
+      <li href="#" class="list-group-item active">Nano Categories</li>
     </ul>
       <ul class="list-group" id="cat_list">
 
@@ -78,8 +78,8 @@
 
 <%- include ../../adminlayouts/footer.ejs %>
 <script>
-$(document).on('change','select[name=category_id]',function(){
-  $.get('/admin/get_subcategories/?id='+$(this).val(),function(res){
+$(document).on('change','#mycate',function(){
+  $.get('/admin/category/get_subcategories/?id='+$(this).val(),function(res){
     var html = '';
     $.each(res,function(key,val){
     html += '<option value="'+val.id+'">'+val.name+'</option>';
@@ -89,11 +89,29 @@ $(document).on('change','select[name=category_id]',function(){
 })
 $(document).on('change','select[name=sub_category_id]',function(){
   var html = '';
-  $.get('/admin/get_nanocategories/?id='+$(this).val(),function(res){
+  $.get('/admin/category/get_nanocategories?id='+$(this).val(),function(res){
     $.each(res,function(key,val){
-      html += '<li href="#" class="list-group-item">'+val.name+'</li>';
+      html += '<li id="delets'+val.id+'" href="#" class="list-group-item">'+val.name+'<a href="#"><i class="fa fa-trash" aria-hidden="true" data-id="'+val.id+'" title="Delete"></i></a></li>';
     })
     $('#cat_list').html(html)
   },'json')
 });
+
+$(document).on('click','.fa-trash',function(){
+ var y = confirm("Are You Sure!");
+ if(y == true){
+  var a =$(this)
+  $.get('/admin/category/nanodelete?id='+$(this).data('id'),function(res){
+    alert(res.message)
+    if(res.success == 1){
+     $('#delets'+a.data('id')).remove()
+    }
+
+  },'json')
+  }else{
+
+ return false; 
+}
+
+})
 </script>

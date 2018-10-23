@@ -73,12 +73,32 @@
 <%- include ../../adminlayouts/footer.ejs %>
 <script>
 $(document).on('change','select[name=category_id]',function(){
-  $.get('/admin/get_subcategories/?id='+$(this).val(),function(res){
+  $.get('/admin/category/get_subcategories?id='+$(this).val(),function(res){
     var html = '';
     $.each(res,function(key,val){
-    html += '<li href="#" class="list-group-item">'+val.name+'</li>';
+    html += '<li id="delets'+val.id+'" href="#" class="list-group-item">'+val.name+'<a href="#"><i class="fa fa-trash" aria-hidden="true" data-id="'+val.id+'" title="Delete"></i></a></li>';
     })
     $('#cat_list').html(html)
   },'json')
+})
+
+
+
+$(document).on('click','.fa-trash',function(){
+ var y = confirm("Are You Sure!");
+ if(y == true){
+  var a =$(this)
+  $.get('/admin/category/delete?id='+$(this).data('id'),function(res){
+    alert(res.message)
+    if(res.success == 1){
+     $('#delets'+a.data('id')).remove()
+    }
+
+  },'json')
+  }else{
+
+ return false; 
+}
+
 })
 </script>
