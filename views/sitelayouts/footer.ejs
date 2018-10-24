@@ -63,42 +63,42 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/action_page.php">
+        <form class="form" action="/registration/user_registration" id="myform" method="post">
 			<div class="form-row">
 				<div class="col-md-6">
 				<div class="form-group">
 				  <label>First Name:</label>
-				  <input type="text" class="form-control" name="">
+				  <input type="text" class="form-control" name="fname" required="true">
 				</div>
 				</div>
 				<div class="col-md-6">
 				<div class="form-group">
 				  <label>Last Name:</label>
-				  <input type="text" class="form-control" name="">
+				  <input type="text" class="form-control" name="lname" required="true">
 				</div>
 				</div>
 				<div class="col-md-6">
 				<div class="form-group">
 				  <label>Email:</label>
-				  <input type="text" class="form-control" name="">
+				  <input type="email" class="form-control" name="email" required="true">
 				</div>
 				</div>
 				<div class="col-md-6">
 				<div class="form-group">
 				  <label>Phone:</label>
-				  <input type="text" class="form-control" name="">
+				  <input type="number" class="form-control" name="phone" required="true">
 				</div>
 				</div>
 				<div class="col-md-6">
 				<div class="form-group">
 				  <label>Password:</label>
-				  <input type="password" class="form-control" name="">
+				  <input type="password" class="form-control" name="password" id="password" required="true">
 				</div>
 				</div>
 				<div class="col-md-6">
 				<div class="form-group">
 				  <label>Confirm Password:</label>
-				  <input type="password" class="form-control"  name="">
+				  <input type="password" class="form-control"  name="cpassword" id="mychange" required="true">
 				</div>
 				</div>
 				<div class="col-md-12">
@@ -185,12 +185,55 @@
       <script>
    
       //alert('ok');
-     $('#tab12').removeClass('active tabbar_heading');
-     $('#tab13').addClass('active');
-     $('#activelink').removeClass('active');
-     $('#link1').addClass('active');
+   
      
 
+     $(document).on('submit','#myform',function(e){
+       // alert('ok');
+                    e.preventDefault();
+                 var pass = $('#password').val();
+                 var cpass = $('#mychange').val();
+                  if(pass!== cpass){
+
+                  alert('Password Did Not Matched!!');
+
+
+                    $('#password').focus();
+                    $('#password').css('box-shadow', '0 0 0 0.2rem rgba(226, 8, 18, 0.25');
+                   $('#password').css('border-color', 'red');
+
+                    $('#mychange').focus();
+                    $('#mychange').css('box-shadow', '0 0 0 0.2rem rgba(226, 8, 18, 0.25');
+                   $('#mychange').css('border-color', 'red');
+
+                   
+
+                      return false;
+
+                   }else{
+                    var formData = new FormData(this);  
+                    console.log()                
+                    $.post({
+                        type:'POST',
+                        url:$(this).attr('action'),
+                        data:formData,
+                        cashe:false,
+                        contentType:false,
+                        processData:false,                      
+                        success:function(data){
+                         //  alert(data)
+                            alert(data.message);
+                            location.reload();
+                        },
+                        error:function(data){
+                            
+                            alert(data.message);
+                        }
+                    },'json');
+
+                  }
+                });
+     
       </script>
      
   </body>

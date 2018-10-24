@@ -3,72 +3,69 @@ var express = require('express')
 var app = express()
 var await = require('await')
 const {database} = require('../db.js')
-// app.get('/reb', function(req, res) {
-//     // render to views/index.ejs template file
-//     //res.render('index', {title: 'Application R.E.B'})
-//     req.getConnection(function(error, conn) {
-//         conn.query('SELECT * FROM classes ORDER BY id DESC',function(err, rows, fields) {
-//             if (err) {
-//                 req.flash('error', err)
-//                 res.render('index', {
-//                     title: 'Class List',
-//                     data: ''
-//                 })
-//             } else {
-//                 res.render('index', {
-//                     title: 'Class List',
-//                     data: rows
-//                 })
-//             }
-//         })
-//     })
-//
-// })
-
-app.get('/',  function(req, res, next) {
-
-    req.getConnection(function(error, conn) {
-      var sub_cat; sub_cats = []
-      conn.query('SELECT id,name FROM tbl_categories ',function(err, rows, fields) {
-        var categories = rows;
-        // for (x in rows) {
-        var x = 0;
-          while (x < 3) {
-           //sub_cat = await
-           var sql = 'select id,name from tbl_sub_categories where  category_id  = '+ rows[x].id;
-           sub_cat = await (database.query (sql, [], true))
-
-          categories[x].sub = sub_cat
-          console.log(sub_cat)
-          x++;
-        }
-        // console.log(categories)
-        res.render('index', {
-            title: 'Class List',
-            data: categories
-        })
-    })
-  })
-
+app.get('/',async function(req, res, next) {
+    var subjects ;
+    var classes;
+    var boards;
+    var query = 'SELECT * FROM tbl_subjects GROUP BY subject_name ORDER BY id ASC';
+    subjects = await database.query(query, [] );
+    var query = 'SELECT * FROM tbl_class GROUP BY class_name ORDER BY id ASC';
+    classes = await database.query(query, [] );
+    var query = 'SELECT * FROM tbl_boards GROUP BY board_name ORDER BY id ASC';
+    boards = await database.query(query, [] );
+    var data  = {
+        boards : JSON.parse(boards),
+        classes : JSON.parse(classes),
+        subjects : JSON.parse(subjects)
+    }
+        res.render('site/index', {
+            title: 'Add content',
+            data: data
+        }) 
 })
+// app.get('/',async function(req, res, next) {
 
-
-const getCategories = async function (cat_id , req) {
-    //categories[x].sub = [x , 'a', 'b']
-
-}
-
-
-app.get('/class-wise', function(req, res, next) {
+//     var query = 'SELECT * FROM tbl_class GROUP BY class_name';
+//     results = await database.query(query, [] );
+//         res.render('site/index', {
+//             title: 'Add content',
+//             data: JSON.parse(results)
+//         }) 
+// })
+app.get('/class-wise',async function(req, res, next) {
+    var topic
+    var subject
+    var current_subs = req.query.id;
+    var query = 'SELECT * FROM tbl_topic where class_id = '+req.query.id;
+    topic = await database.query(query, [] );
+    var query = 'SELECT * FROM tbl_class GROUP BY class_name ORDER BY id ASC';
+    subject = await database.query(query, [] );
+    var data  = {
+        subject: JSON.parse(subject),
+        topic : JSON.parse(topic),
+        current_subs : current_subs
+    }
     res.render('site/class-wise', {
         title: 'Class List',
-        data: 'this is site index'
+        data: data
     })
 })
-app.get('/subject-wise', function(req, res, next) {
+app.get('/subject-wise',async function(req, res, next) {
+    var topic
+    var subject
+    var current_subs = req.query.id;
+    var query = 'SELECT * FROM tbl_topic where subject_id = '+req.query.id;
+    topic = await database.query(query, [] );
+    var query = 'SELECT * FROM tbl_subjects GROUP BY subject_name ORDER BY id ASC';
+    subject = await database.query(query, [] );
+    var data  = {
+        subject: JSON.parse(subject),
+        topic : JSON.parse(topic),
+        current_subs : current_subs
+    }
     res.render('site/subject-wise', {
         title: 'Class List',
-        data: 'this is site index'
+        data: data
     })
 })
 app.get('/board-material', function(req, res, next) {
@@ -91,11 +88,27 @@ app.get('/career-guidance', function(req, res, next) {
     })
 })
 
-app.get('/blog-discussion', function(req, res, next) {
-    res.render('site/blog-discussion', {
-        title: 'Class List',
-        data: 'this is site index'
-    })
+app.get('/blog-discussion',async function(req, res, next) {
+
+    var subjects ;
+    var classes;
+    var boards;
+    var query = 'SELECT * FROM tbl_subjects GROUP BY subject_name ORDER BY id ASC';
+    subjects = await database.query(query, [] );
+    var query = 'SELECT * FROM tbl_class GROUP BY class_name ORDER BY id ASC';
+    classes = await database.query(query, [] );
+    var query = 'SELECT * FROM tbl_boards GROUP BY board_name ORDER BY id ASC';
+    boards = await database.query(query, [] );
+    var data  = {
+        boards : JSON.parse(boards),
+        classes : JSON.parse(classes),
+        subjects : JSON.parse(subjects)
+    }
+        res.render('site/blog-discussion', {
+            title: 'Add content',
+            data: data
+        }) 
+    
 })
 
 app.get('/blog_subjectwise', function(req, res, next) {
@@ -112,11 +125,27 @@ app.get('/blog_subject_topic', function(req, res, next) {
     })
 })
 
-app.get('/test_your_self', function(req, res, next) {
-    res.render('site/test_your_self', {
-        title: 'Class List',
-        data: 'this is site index'
-    })
+app.get('/test_your_self',async function(req, res, next) {
+
+    var subjects ;
+    var classes;
+    var boards;
+    var query = 'SELECT * FROM tbl_subjects GROUP BY subject_name ORDER BY id ASC';
+    subjects = await database.query(query, [] );
+    var query = 'SELECT * FROM tbl_class GROUP BY class_name ORDER BY id ASC';
+    classes = await database.query(query, [] );
+    var query = 'SELECT * FROM tbl_boards GROUP BY board_name ORDER BY id ASC';
+    boards = await database.query(query, [] );
+    var data  = {
+        boards : JSON.parse(boards),
+        classes : JSON.parse(classes),
+        subjects : JSON.parse(subjects)
+    }
+        res.render('site/test_your_self', {
+            title: 'Add content',
+            data: data
+        }) 
+   
 })
 
 app.get('/entrance_exam', function(req, res, next) {

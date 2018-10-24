@@ -5,13 +5,25 @@ const {database} = require('../db.js')
 // SHOW LIST OF classes
 app.get('/class-list', async function(req, res, next) {
    
-        var query = 'select tbl_class.id , tbl_class.class_name ,tbl_boards.board_name from tbl_class INNER JOIN tbl_boards on tbl_class.board_id = tbl_boards.id';
+        var query = 'SELECT * FROM `tbl_class` ORDER BY id DESC';
         results = await database.query(query, [] );
-             res.render('admin/classes/listclass', {
-                    title: 'Class List',
-                    data: JSON.parse(results)
-                })
+        if(!results.length) {
+            res.render('admin/classes/listclass', {
+                title: 'Class List'
+             
+           })
+            console.log("empty results", results)
+        }
+        else {
+            
+
+        res.render('admin/classes/listclass', {
+        title: 'Class List',
+        data: JSON.parse(results)
+     
+   })
    
+}
 })
 
 // SHOW ADD Class FORM
@@ -28,6 +40,7 @@ app.get('/addclass', async function(req, res, next){
 
 
 })
+
 app.get('/show_class',async function(req, res, next) {
     
       var query = 'SELECT * FROM tbl_class where board_id = '+req.query.id;
@@ -37,14 +50,15 @@ app.get('/show_class',async function(req, res, next) {
        
    
 })
+
 // ADD NEW USER POST ACTION
 app.post('/addclass',async function(req, res, next){
-    req.assert('board_id','Board is required').notEmpty()           //Validate id
+            
     req.assert('class_name','Class Name is required').notEmpty()         //Validate class name
     var errors = req.validationErrors()
     if( !errors ) {
       var cl = {
-            board_id: req.sanitize('board_id').escape().trim(),
+          
             class_name: req.sanitize('class_name').escape().trim(),
         }
 

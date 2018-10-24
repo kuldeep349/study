@@ -57,6 +57,7 @@ var tcr=require('./routes/category')
 var home=require('./routes/home')
 var site=require('./routes/site')
 var admin=require('./routes/admin')
+var reg=require('./routes/registration')
 
 // for front end
 /*app.get('/', function(req, res){
@@ -138,6 +139,7 @@ app.use('/admin/category',tcr)
 app.use('/reb/home',home)
 app.use('/site',site)
 app.use('/admin',admin)
+app.use('/registration',reg)
 
 
 

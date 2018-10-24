@@ -24,16 +24,24 @@
 				<div class="main_title">
 					<a href="test_yourself_subjectwise">Subject Wise Test</a>
 				</div>	
-				<div id="owl-demo" class="text-center">        
+				<div id="owl-demo" class="text-center"> 
+				  <% if (locals.data.subjects) {
+
+                      %>
+                   <% locals.data.subjects.forEach(function(cat){
+
+                       %>       
 					<div class="item">
 						<div class="section_box">
 						  <a href=""><div class="product_icon">
 							<i class="fas fa-user-graduate"></i>
 						  </div><br>
-						  <h5>Physics</h5></a>
+						  <h5><%= cat.subject_name %></h5></a>
 						</div>
 					</div>
-					<div class="item">
+					<% }) %>
+                    <% } %>
+				<!-- 	<div class="item">
 						<div class="section_box">
 						  <a href=""><div class="product_icon">
 							<i class="fas fa-at"></i>
@@ -80,7 +88,7 @@
 						  </div><br>
 						  <h5>Business Studies</h5></a>
 						</div>
-					</div>		
+					</div> -->		
 				</div>
 			</div>
 		</div>
@@ -93,16 +101,24 @@
 					<div class="main_title text-right">
 						<a href="">At School Level</a>
 					</div>
-					<div id="owl-demo" class="text-center">        
+					<div id="owl-demo" class="text-center"> 
+					 <% if (locals.data.classes) {
+
+                      %>
+                   <% locals.data.classes.forEach(function(cls){
+
+                       %>       
 						<div class="item">
 							<div class="section_box">
 							  <a href=""><div class="product_icon">
 								<i class="fas fa-at"></i>
 							  </div><br>
-							  <h5>IX</h5></a>
+							  <h5><%= cls.class_name %></h5></a>
 							</div>
 						</div>
-						<div class="item">
+						<% }) %>
+                        <% } %>
+						<!-- <div class="item">
 							<div class="section_box">
 							  <a href=""><div class="product_icon">
 								<i class="fas fa-at"></i>
@@ -149,7 +165,7 @@
 							  </div><br>
 							  <h5>BA</h5></a>
 							</div>
-						</div>		
+						</div>	 -->	
 					</div>
 				</div>
 				<div class="col-md-5 col-lg-3 col-sm-5 d-none d-sm-block category_img">

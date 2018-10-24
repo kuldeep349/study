@@ -22,10 +22,15 @@
 			  	<h6 href="subject-wise.ejs">Subject Wise <i class="fas fa-hand-point-right hand_icon"></i></h6>
 			  </div>
 			  <ul class="nav nav-tabs" id="myTab" role="tablist">
-				  <li class="nav-item">
-				    <a class="nav-link active tabbar_heading" id="tab12" data-toggle="tab" href="#activelink" role="tab" aria-controls="home"><i class="fas fa-chevron-right"></i> Environment</a>
+			  	      <% if (locals.data.subject) { %>
+			           <% locals.data.subject.forEach(function(cat){%>
+			      <li class="nav-item">
+				    <a class="nav-link <%= locals.data.current_subs == cat.id ? 'active' : '' %> tabbar_heading" id="tab12" href="subject-wise?id=<%= cat.id %>" role="tab" aria-controls="home"><i class="fas fa-chevron-right"></i><%= cat.subject_name %></a>
 				  </li>
-				  <li class="nav-item">
+				  <% }) %>
+			      <% } %>
+
+				<!--   <li class="nav-item">
 				    <a class="nav-link" data-toggle="tab"  id="tab13" href="#link1" role="tab" aria-controls="profile"><i class="fas fa-chevron-right"></i> Physics</a>
 				  </li>
 				  <li class="nav-item">
@@ -54,7 +59,7 @@
 				  </li>
 				  <li class="nav-item">
 				    <a class="nav-link" data-toggle="tab" href="#link10" role="tab" aria-controls="settings"><i class="fas fa-chevron-right"></i> Hindi</a>
-				  </li>
+				  </li> -->
 			  </ul>
 			  <!--div class="side_navbar">
 			  	<h5>Other Link</h5>
@@ -74,21 +79,40 @@
 			</div>
 			<div class="col-md-4 col-sm-8 col-xl-9">
 				<div class="tab-content">
-					<div class="tab-pane active" id="activelink" role="tabpanel">
+					
+					<div class="tab-pane active" id="" role="tabpanel">
 						<div class="main_title">
-							<a href="">Environment</a>
+							 <% locals.data.subject.forEach(function(cat){%>
+						      
+							   <% if(locals.data.current_subs == cat.id) { %>
+							   		<a href=""><%= cat.subject_name %></a> 
+							   		<% }%> 
+							  
+							  <% }) %>
+							  
 						</div>
+					
+
 					  	<div class="text-center mb-2">
 					  		<div class="form-row">
-						  		<div class="col-md-6 col-sm-6 col-lg-3">	
+					  			 <% if (locals.data.topic) {
+
+			                      %>
+			                   <% locals.data.topic.forEach(function(cat){
+
+			                       %>
+								<div class="col-md-6 col-sm-6 col-lg-3">	
 									<div class="subject_box">
 									  <a href="#"><div class="subject_icon">
 										<i class="fas fa-at"></i>
 									  </div><br>
-									  <h5>Force</h5></a>
+									  <h5><%= cat.topic_name %></h5></a>
 									</div>
 								</div>
-								<div class="col-md-6 col-sm-6 col-lg-3">	
+								<% }) %>
+			                    <% } %>
+						  		
+								<!-- <div class="col-md-6 col-sm-6 col-lg-3">	
 									<div class="subject_box">
 									  <a href="subject_subcategory"><div class="subject_icon">
 										<i class="fas fa-at"></i>
@@ -119,11 +143,11 @@
 									  </div><br>
 									  <h5>Chemical</h5></a>
 									</div>
-								</div>
+								</div> -->
 							</div>
 						</div>
 					</div>
-				  <div class="tab-pane" id="link1" role="tabpanel">
+				<!--   <div class="tab-pane" id="link1" role="tabpanel">
 					<div class="main_title">
 						<a href="">Physics</a>
 					</div>
@@ -171,8 +195,8 @@
 							</div>
 						</div>
 					</div>
-				  </div>
-				  <div class="tab-pane" id="link2" role="tabpanel">.3..</div>
+				  </div> -->
+				 <!--  <div class="tab-pane" id="link2" role="tabpanel">.3..</div>
 				  <div class="tab-pane" id="link3" role="tabpanel">.4..</div>
 				  <div class="tab-pane" id="link4" role="tabpanel">.5..</div>
 				  <div class="tab-pane" id="link5" role="tabpanel">.6..</div>
@@ -180,7 +204,7 @@
 				  <div class="tab-pane" id="link7" role="tabpanel">.8..</div>
 				  <div class="tab-pane" id="link8" role="tabpanel">.9..</div>
 				  <div class="tab-pane" id="link9" role="tabpanel">.10..</div>
-				  <div class="tab-pane" id="link10" role="tabpanel">.11..</div>
+				  <div class="tab-pane" id="link10" role="tabpanel">.11..</div> -->
 				</div>
 			</div>
 			
@@ -188,3 +212,4 @@
 	</div>
 
     <%- include ../sitelayouts/footer.ejs %>
+    	

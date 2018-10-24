@@ -35,7 +35,7 @@ including header content which is common for all pages
       <table width='80%' border=0>
 
           <tr style='text-align:left; background-color:#CCC'>
-              <th>Board</th>
+            
               <th>Class-Name</th>
               <th>Action</th>
           </tr>
@@ -48,13 +48,13 @@ including header content which is common for all pages
               });
           -->
           <% if (locals.data) {
-
+                   console.log(locals.data);
               %>
           <% locals.data.forEach(function(cl){
 
               %>
               <tr>
-                <td><%= cl.board_name %></td>
+               
                   <td><%= cl.class_name %></td>
 
                   <td>
