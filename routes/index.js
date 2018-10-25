@@ -1,7 +1,7 @@
 
 var express = require('express')
 var app = express()
-var await = require('await')
+
 const {database} = require('../db.js')
 app.get('/',async function(req, res, next) {
     var subjects ;
@@ -13,11 +13,18 @@ app.get('/',async function(req, res, next) {
     classes = await database.query(query, [] );
     var query = 'SELECT * FROM tbl_boards GROUP BY board_name ORDER BY id ASC';
     boards = await database.query(query, [] );
+    // var data  = {
+    //     boards : JSON.parse(JSON.stringify(boards)),
+    //     classes : JSON.parse(JSON.stringify(classes)),
+    //     subjects : JSON.parse(JSON.stringify(subjects))
+    // }
     var data  = {
         boards : JSON.parse(boards),
-        classes : JSON.parse(classes),
-        subjects : JSON.parse(subjects)
+         classes :JSON.parse(classes),
+         subjects : JSON.parse(subjects)
     }
+    console.log(data)
+
         res.render('site/index', {
             title: 'Add content',
             data: data
