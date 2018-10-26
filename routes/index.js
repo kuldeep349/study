@@ -13,11 +13,7 @@ app.get('/',async function(req, res, next) {
     classes = await database.query(query, [] );
     var query = 'SELECT * FROM tbl_boards GROUP BY board_name ORDER BY id ASC';
     boards = await database.query(query, [] );
-    // var data  = {
-    //     boards : JSON.parse(JSON.stringify(boards)),
-    //     classes : JSON.parse(JSON.stringify(classes)),
-    //     subjects : JSON.parse(JSON.stringify(subjects))
-    // }
+   
     var data  = {
         boards : JSON.parse(boards),
          classes :JSON.parse(classes),
@@ -30,15 +26,8 @@ app.get('/',async function(req, res, next) {
             data: data
         }) 
 })
-// app.get('/',async function(req, res, next) {
 
-//     var query = 'SELECT * FROM tbl_class GROUP BY class_name';
-//     results = await database.query(query, [] );
-//         res.render('site/index', {
-//             title: 'Add content',
-//             data: JSON.parse(results)
-//         }) 
-// })
+
 app.get('/class-wise',async function(req, res, next) {
     var topic
     var subject
