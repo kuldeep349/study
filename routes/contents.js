@@ -6,7 +6,7 @@ const {database} = require('../db.js')
 // SHOW LIST OF classes
 app.get('/contentlist',async function(req, res, next){
    
-        var query = 'SELECT * FROM tbl_boards ORDER BY id DESC';
+        var query = 'select * from tbl_class where id in (select class_id from tbl_topic) ORDER BY id ASC';
           results = await database.query(query, [] );
               res.render('admin/content/contentlist', {
                   title: 'Add content',
@@ -36,28 +36,35 @@ app.get('/showpdf', async function(req, res, next) {
 
 
 
-app.get('/addcontent', function(req, res, next){
-    req.getConnection(function(error, conn) {
-        conn.query('SELECT * FROM tbl_boards ORDER BY id DESC',function(err, rows, fields) {
-            //if(err) throw err
-            if (err) {
-                req.flash('error', err)
-                res.render('admin/content/addcontent', {
-                    title: 'Add Topic',
-                    data:''
-                })
-            } else {
+app.get('/addcontent', async function(req, res, next){
+ 
+     var query = 'select * from tbl_class where id in (select class_id from tbl_topic) ORDER BY id ASC';
+            results = await database.query(query, [] );
+            
               res.render('admin/content/addcontent', {
                   title: 'Add Subject',
-                  data:rows
-              })
-            }
-        })
+                  data:JSON.parse(results)
+              })  
     })
   
+    app.get('/show_subject',async function(req, res, next) {
+    
+      var query = 'SELECT tbl_subjects.*, tbl_topic.topic_name FROM tbl_subjects LEFT JOIN tbl_topic ON tbl_subjects.id = tbl_topic.subject_id WHERE tbl_topic.class_id = '+ req.query.id + ' GROUP BY subject_name ';
+       //console.log(query);
+         results = await database.query(query, [] );
+          //res.writeHead(200, {'Content-Type': 'application/json'});
+          res.send(results);
+       
+   
   })
-
-
+// SHOW LIST OF TOPICS WITH DESCRIPTION
+app.get('/show_topic_name', async function(req, res, next) {
+  var query = 'SELECT * FROM tbl_topic where subject_id = ' + req.query.id + '&&class_id = ' + req.query.vid;
+   results = await database.query(query, [] );
+    // console.log(results)
+      res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(results);
+})
 // ADD NEW Content POST ACTION
 /*
 * GET home page.
@@ -122,6 +129,27 @@ app.post('/mycontent', async function(req, res, next){
    }
  
 });
+//TO GRT SUBJECT LIST
+app.get('/show_subject',async function(req, res, next) {
+    
+  var query = 'SELECT tbl_subjects.*, tbl_topic.topic_name FROM tbl_subjects LEFT JOIN tbl_topic ON tbl_subjects.id = tbl_topic.subject_id WHERE tbl_topic.class_id = '+ req.query.id + ' GROUP BY subject_name ';
+ 
+     results = await database.query(query, [] );
+      //res.writeHead(200, {'Content-Type': 'application/json'});
+      res.send(results);
+   
+
+})
+// SHOW LIST OF TOPICS
+//   app.get('/show_topic', async function(req, res, next) {
+//       var query = 'SELECT * FROM tbl_topic where subject_id = ' + req.query.id;
+//        results = await database.query(query, [] );
+//         // console.log(results)
+//           res.writeHead(200, {'Content-Type': 'application/json'});
+//             res.end(results);
+      
+   
+// })
  
 // SHOW EDIT USER FORM
 // app.get('/editcontent/(:id)', function(req, res, next){

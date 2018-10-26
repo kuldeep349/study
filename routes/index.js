@@ -25,7 +25,7 @@ app.get('/',async function(req, res, next) {
     }
     console.log(data)
 
-        res.render('site/index', {
+        res.render('index', {
             title: 'Add content',
             data: data
         }) 

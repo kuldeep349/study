@@ -25,37 +25,30 @@
               
               <div class="box-body">
                 <div class="form-group">
-                  <label for="exampleInputEmail1">Choose Board</label>
-                  <select class="form-control" name="board_id" id="board_id">
-                    <option disabled selected> Choose Board</option>
+                  <label for="exampleInputEmail1">Choose Class</label>
+                  <select class="form-control" name="class_id" id="class_id">
+                    <option disabled selected>Choose Class</option>
                     <% if (locals.data) {
                         %>
                     <% locals.data.forEach(function(cl){
                         %>
-                    <option value="<%= cl.id %>"><%= cl.board_name %></option>
+                    <option value="<%= cl.id %>"><%= cl.class_name %></option>
                     <% }) %>
                     <% } %>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="exampleInputPassword1">Select Class</label>
-                  <select class="form-control" name="class_id" id="class_id">
+                  <label for="exampleInputPassword1">Select Subject</label>
+                  <select class="form-control" name="subject_id" id="subject_id">
   
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="exampleInputFile">Select Subject</label>
-                  <select class="form-control"name="subject_id" id="subject_id" >
+                  <label for="exampleInputFile">Select Topic</label>
+                  <select class="form-control"name="topic_id" id="topic_id" >
                    
                     
                   </select>
-                </div>
-                <div class="form-group">
-                  
-                    <label for="exampleInputPassword1">Select Topic</label>
-                    <select class="form-control" name="topic_id" id="topic_id">
-                    <select>
-                  
                 </div>
                 <div class="form-group">
                   <label for="exampleInputEmail1">Content Title</label>
@@ -146,20 +139,20 @@ $('#show_content').css('display','none');
 // });
 
 
-$(document).on('change','#board_id',function(){
-  var html = '';
-  $.get('/admin/class/show_class?id='+$(this).val(),function(res){
-    $.each(res,function(key,val){
-      html += '<option value="'+val.id+'">'+val.class_name+'</option>';
-    })
-      $('#class_id').html(html)
-  },'json')
-})
+// $(document).on('change','#board_id',function(){
+//   var html = '';
+//   $.get('/admin/class/show_class?id='+$(this).val(),function(res){
+//     $.each(res,function(key,val){
+//       html += '<option value="'+val.id+'">'+val.class_name+'</option>';
+//     })
+//       $('#class_id').html(html)
+//   },'json')
+// })
 
 $(document).on('change','#class_id',function(){
     
     var html = '';
-    $.get('/admin/subject/show_subject?id='+$(this).val(),function(res){
+    $.get('/admin/content/show_subject?id='+$(this).val(),function(res){
       $.each(res,function(key,val){
         html += '<option value="'+val.id+'">'+val.subject_name+'</option>';
       })
@@ -171,7 +164,7 @@ $(document).on('change','#class_id',function(){
 
 $(document).on('change','#subject_id',function(){
   var html = '';
-  $.get('/admin/topic/show_topic?id='+$(this).val(),function(res){
+  $.get('/admin/content/show_topic_name?id='+$(this).val() + '&vid='+$('#class_id').val(),function(res){
     $.each(res,function(key,val){
       html += '<option value="'+val.id+'">'+val.topic_name+'</option>';;
     })

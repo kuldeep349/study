@@ -5,7 +5,7 @@ const {database} = require('../db.js')
 // SHOW LIST OF Subjects
 app.get('/subject-list', async function(req, res, next) {
     
-        var query = 'SELECT * FROM tbl_boards ORDER BY id DESC';
+        var query = 'SELECT * FROM tbl_class ORDER BY id ASC';
         results = await database.query(query, [] );
         res.render('admin/subjects/subjectlist', {
         title: 'Subject List',
@@ -15,21 +15,18 @@ app.get('/subject-list', async function(req, res, next) {
 })
 
 // SHOW ADD SUBJECT FORM
-app.get('/addsubject', async function(req, res, next){
+app.get('/addsubject',async function(req, res, next){
   
-     var query = 'SELECT * FROM tbl_boards ORDER BY id DESC';
-     results = await database.query(query, [] );
-          
       res.render('admin/subjects/addsubject', {
       title: 'Add Subject',
-      data: JSON.parse(results)
+     
      })
          
 })
 
 app.get('/show_subject', async function(req, res, next) {
   
-      var query = 'SELECT * FROM tbl_subjects where class_id = '+req.query.id;
+      var query = 'SELECT * FROM tbl_subjects';
        results = await database.query(query, [] );
           // res.writeHead(200, {'Content-Type': 'application/json'});
           res.send(results);
@@ -46,21 +43,22 @@ app.get('/show_subject', async function(req, res, next) {
 
 // ADD NEW Content POST ACTION
 app.post('/addsubject',async function(req, res, next){
-    req.assert('class_id', 'Class ID is required').notEmpty()
+   
     req.assert('subject_name', 'Subject Name is required').notEmpty()
-    req.assert('board_id', 'Board must be Selected').notEmpty()
+   
 
     var errors = req.validationErrors()
 
     if( !errors ) {
         var sbj = {
-            class_id: req.sanitize('class_id').escape().trim(),
+            
             subject_name: req.sanitize('subject_name').escape().trim(),
-            board_id: req.sanitize('board_id').escape().trim(),
+            
         }
 
       
             var query = 'INSERT INTO tbl_subjects SET ?';
+            console.log(query)
             results = await database.query(query, [sbj] );
                 if (results) {
                     req.flash('success', 'Subject added successfully!')

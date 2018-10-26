@@ -22,32 +22,33 @@ including header content which is common for all pages
 
       <form class="form-horizontal" action="/admin/topic/addtopic" method="post" name="form2">
             <div class="form-group">
-              <label class="control-label col-sm-2" for="class_name">Board Name:</label>
+              <label class="control-label col-sm-2" for="class_name">Class Name:</label>
               <div class="col-sm-10">
-                <select class="form-control" name="board_id" id="board_id">
-                  <option disabled selected> choose board</option>
-                  <% if (locals.data) {
+                <select class="form-control" name="class_id" id="class_id">
+                  <option disabled selected> Choose Class</option>
+                  <% if (locals.data.classes) {
                       %>
-                  <% locals.data.forEach(function(cl){
+                  <% locals.data.classes.forEach(function(cl){
                       %>
-                  <option value="<%= cl.id %>"><%= cl.board_name %></option>
+                  <option value="<%= cl.id %>"><%= cl.class_name %></option>
                   <% }) %>
                   <% } %>
                 </select>
             </div>
            </div>
-           <div class="form-group">
-             <label class="control-label col-sm-2" for="class_name">Choose Class:</label>
-             <div class="col-sm-10">
-               <select class="form-control" name="class_id" id="class_id">
-
-               </select>
-           </div>
-          </div>
+          
           <div class="form-group">
             <label class="control-label col-sm-2" for="class_name">Subject Name:</label>
             <div class="col-sm-10">
               <select name="subject_id" id="subject_id" class="form-control">
+                 <option disabled selected>Choose Subject</option>
+                  <% if (locals.data.subjects) {
+                      %>
+                  <% locals.data.subjects.forEach(function(cl){
+                      %>
+                  <option value="<%= cl.id %>"><%= cl.subject_name %></option>
+                   <% }) %>
+                    <% } %>
                   </select>
           </div>
          </div>
@@ -76,25 +77,4 @@ including header content which is common for all pages
 including footer content which is common for all pages
 -->
 <%- include ../../adminlayouts/footer.ejs %>
-<script>
-$(document).on('change','#board_id',function(){
-  var html = '';
-  $.get('/admin/class/show_class?id='+$(this).val(),function(res){
-    $.each(res,function(key,val){
-      html += '<option value="'+val.id+'">'+val.class_name+'</option>';
-    })
-      $('#class_id').html(html)
-  },'json')
-})
 
-$(document).on('change','#class_id',function(){
-    
-  var html = '';
-  $.get('/admin/subject/show_subject?id='+$(this).val(),function(res){
-    $.each(res,function(key,val){
-      html += '<option value="'+val.id+'">'+val.subject_name+'</option>';
-    })
-      $('#subject_id').html(html)
-  })
-})
-</script>

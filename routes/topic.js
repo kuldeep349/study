@@ -5,7 +5,7 @@ const {database} = require('../db.js')
 
 // SHOW LIST OF BOARDS ON TOPIC LIST PAGE
 app.get('/topic-list', async function(req, res, next ) {
-    var query = 'SELECT * FROM tbl_boards ORDER BY id DESC';
+    var query = 'select * from tbl_class where id in (select class_id from tbl_topic) ORDER BY id ASC';
     results = await database.query(query, [] );
     //console.log(results)
     res.render('admin/topic/topic-list', {
@@ -17,20 +17,31 @@ app.get('/topic-list', async function(req, res, next ) {
 })
 
  
-// SHOW LIST OF BOARDS ON ADD TOPIC PAGE
+// SHOW LIST OF CLASSES AND SUBJECTS ON ADD TOPIC PAGE
 app.get('/addtopic', async function(req, res, next){
-    var query = 'SELECT * FROM tbl_boards ORDER BY id DESC';
-    results = await database.query(query, [] );
-    //console.log(results)
+    var classes;
+    var subjects;
+    var query = 'SELECT * FROM tbl_class ORDER BY id ASC';
+     classes = await database.query(query, [] );
+   var query = 'SELECT * FROM tbl_subjects ORDER BY id ASC';
+    subjects = await database.query(query, [] );
+    var data  = {
+         classes :JSON.parse(classes),
+         subjects : JSON.parse(subjects)
+    }
     res.render('admin/topic/addtopic', {
         title: 'Topic List', 
-        data: JSON.parse(results)
+        data: data
     })
   
   })
+
+
+  
+  
 // SHOW LIST OF TOPICS WITH DESCRIPTION
   app.get('/show_topic', async function(req, res, next) {
-      var query = 'SELECT * FROM tbl_topic where subject_id = ' + req.query.id;
+      var query = 'SELECT * FROM tbl_topic where subject_id = ' + req.query.id + '&&class_id = ' + req.query.vid;
        results = await database.query(query, [] );
         // console.log(results)
           res.writeHead(200, {'Content-Type': 'application/json'});
@@ -39,7 +50,16 @@ app.get('/addtopic', async function(req, res, next){
    
 })
 
-
+app.get('/show_subject',async function(req, res, next) {
+    
+    var query = 'SELECT tbl_subjects.*, tbl_topic.topic_name FROM tbl_subjects LEFT JOIN tbl_topic ON tbl_subjects.id = tbl_topic.subject_id WHERE tbl_topic.class_id = '+ req.query.id + ' GROUP BY subject_name ';
+   
+       results = await database.query(query, [] );
+        //res.writeHead(200, {'Content-Type': 'application/json'});
+        res.send(results);
+     
+ 
+})
 
 
 
@@ -49,7 +69,7 @@ app.get('/addtopic', async function(req, res, next){
  
 // ADD NEW Content POST ACTION
 app.post('/addtopic', async function(req, res, next){    
-    req.assert('subject_id', 'Field Name is required').notEmpty() 
+ 
     req.assert('topic_name', 'Topic Name is required').notEmpty()  
     req.assert('text_name', 'Description is required').notEmpty()   
 

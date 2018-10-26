@@ -43,7 +43,7 @@ app.get('/addclass', async function(req, res, next){
 
 app.get('/show_class',async function(req, res, next) {
     
-      var query = 'SELECT * FROM tbl_class where board_id = '+req.query.id;
+      var query = 'SELECT * FROM tbl_class where id = '+req.query.id;
          results = await database.query(query, [] );
           //res.writeHead(200, {'Content-Type': 'application/json'});
           res.send(results);
