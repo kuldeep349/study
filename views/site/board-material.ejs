@@ -22,10 +22,14 @@
 			  	<h6>Study Material By Board <i class="fas fa-hand-point-right hand_icon"></i></h6>
 			  </div>
 			  <ul class="nav nav-tabs" id="myTab" role="tablist">
+			  	 <% if (locals.data.myboards) { %>
+			           <% locals.data.myboards.forEach(function(cat){%>
 				  <li class="nav-item">
-				    <a class="nav-link active" data-toggle="tab" href="#activelink" role="tab" aria-controls="home"><i class="fas fa-chevron-right"></i> CBSE</a>
+				    <a class="nav-link <%= locals.data.current_subs == cat.id ? 'active' : '' %>"  href="board-material?id=<%= cat.id %>" role="tab" aria-controls="home"><i class="fas fa-chevron-right"></i><%= cat.board_name %></a>
 				  </li>
-				  <li class="nav-item">
+				  <% }) %>
+			      <% } %>
+				 <!--  <li class="nav-item">
 				    <a class="nav-link" data-toggle="tab" href="#link1" role="tab" aria-controls="profile"><i class="fas fa-chevron-right"></i> ICSE</a>
 				  </li>
 				  <li class="nav-item">
@@ -42,7 +46,7 @@
 				  </li>
 				  <li class="nav-item">
 				    <a class="nav-link" data-toggle="tab" href="#link6" role="tab" aria-controls="settings"><i class="fas fa-chevron-right"></i> GOA</a>
-				  </li>
+				  </li> -->
 			  </ul>
 			  <div class="filter_bar">
 			  	<a href="/subject-wise"><i class="fas fa-chevron-right"></i> Subject Wise</a>
@@ -58,18 +62,34 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="activelink" role="tabpanel">
 						<div class="main_title">
-							<a href="cbse-board">CBSE</a>
+							 <% locals.data.myboards.forEach(function(cat){%>
+						      
+							   <% if(locals.data.current_subs == cat.id) { %>
+							   		<a href=""><%= cat.board_name %></a> 
+							   		<% }%> 
+							  
+							  <% }) %>
 						</div>
 					  	<div id="owl-demo" class="text-center">
+					  		 <% if (locals.data.board) {
+
+			                      %>
+			                   <% locals.data.board.forEach(function(cat){
+
+			                       %>
 							<div class="item">
+								
 								<div class="section_box">
 								  <a href=""><div class="product_icon">
 									<i class="fas fa-at"></i>
 								  </div><br>
-								  <h5>IX</h5></a>
+								  <h5><%= cat.class_name %></h5></a>
 								</div>
 							</div>
-							<div class="item">
+                            <% }) %>
+			                    <% } %>
+						  		
+							<!-- <div class="item">
 								<div class="section_box">
 								  <a href=""><div class="product_icon">
 									<i class="fas fa-at"></i>
@@ -116,10 +136,10 @@
 								  </div><br>
 								  <h5>BA</h5></a>
 								</div>
-							</div>
+							</div> -->
 						</div>
 					</div>
-				  <div class="tab-pane" id="link1" role="tabpanel">
+				<!--   <div class="tab-pane" id="link1" role="tabpanel">
 					<div class="main_title">
 						<a href="icseboard.html">ICSE</a>
 					</div>
@@ -181,7 +201,7 @@
 							</div>
 						</div>
 					</div>
-				  </div>
+				  </div> -->
 				  <div class="tab-pane" id="link2" role="tabpanel">XI</div>
 				  <div class="tab-pane" id="link3" role="tabpanel">XII</div>
 				  <div class="tab-pane" id="link4" role="tabpanel">B.Sc</div>

@@ -27,10 +27,18 @@ app.get('/categories', auth, async function(req, res, next){
     
        var query = 'SELECT * FROM tbl_categories ORDER BY id DESC';
        results = await database.query(query, [] );
+       if(!results.length) {
+
         res.render('admin/category/category_list', {
         title: 'Category List',
-        data: JSON.parse(results)
-    })
+        })
+        console.log("empty results", results)
+     } else {
+        res.render('admin/category/category_list', {
+            title: 'Category List',
+            data: JSON.parse(results)
+     })
+    }   
           
 })
 // TO DELETE CATEGORIES
@@ -53,11 +61,17 @@ app.get('/add-category', auth,async function(req, res, next){
 
      var query = 'SELECT * FROM tbl_categories ORDER BY id DESC';
       results = await database.query(query, [] );
+      if(!results.length) {
       res.render('admin/category/addcategory', {
        title: 'Category List',
-       data: JSON.parse(results)
      })
-          
+     //console.log("empty results", results)
+    } else {
+        res.render('admin/category/addcategory', {
+            title: 'Category List',
+            data: JSON.parse(results)   
+          })
+        }      
 })
 // TO ADD CATEGORY
 app.post('/add-category', auth, async function(req, res, next){

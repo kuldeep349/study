@@ -182,7 +182,7 @@
 			</div>
 			<div class="col-md-7 col-lg-9 col-sm-7">
 				<div class="main_title">
-					<a href="board-material">Study Material By Board</a>
+					<a href="#/">Study Material By Board</a>
 				</div>
 				<div id="owl-demo" class="text-center">
                     <% if (locals.data.boards) {
@@ -193,7 +193,7 @@
                        %>
 					<div class="item">
 						<div class="section_box">
-						  <a href="board-material"><div class="product_icon">
+						  <a href="board-material?id=<%= cls.id %>"><div class="product_icon">
 							<i class="fas fa-at"></i>
 						  </div><br>
 						  <h5><%= cls.board_name %></h5></a>
