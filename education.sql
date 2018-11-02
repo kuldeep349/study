@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 02, 2018 at 05:50 AM
+-- Generation Time: Nov 02, 2018 at 07:33 AM
 -- Server version: 10.1.35-MariaDB
 -- PHP Version: 7.2.9
 
@@ -291,7 +291,7 @@ CREATE TABLE `tbl_user` (
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `phone` int(11) NOT NULL,
+  `phone` varchar(20) NOT NULL,
   `password` varchar(50) NOT NULL,
   `role` varchar(10) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -302,8 +302,10 @@ CREATE TABLE `tbl_user` (
 --
 
 INSERT INTO `tbl_user` (`id`, `first_name`, `last_name`, `email`, `phone`, `password`, `role`, `created_at`) VALUES
-(5, 'jitendra', 'Kumar', 'jitendra.innox@gmail.com', 2147483647, '123', 'U', '2018-10-23 15:14:36'),
-(11, 'jitendra', 'Kumar', 'jitendra.innox@gmail.com', 2147483647, '123', 'U', '2018-10-23 18:30:43');
+(5, 'jitendra', 'Kumar', 'jitendra.innox@gmail.com', '2147483647', '123', 'U', '2018-10-23 15:14:36'),
+(11, 'jitendra', 'Kumar', 'jitendra.innox@gmail.com', '2147483647', '123', 'U', '2018-10-23 18:30:43'),
+(12, 'jitendra', 'Kumar', 'kush@gamil.com', '2147483647', '123', 'U', '2018-11-02 06:13:05'),
+(13, 'Kuldeep', 'Kumar', 'jitendra.innox@gmail.com', '8123458421', '1234', 'U', '2018-11-02 06:31:57');
 
 --
 -- Indexes for dumped tables
@@ -421,7 +423,7 @@ ALTER TABLE `tbl_topic`
 -- AUTO_INCREMENT for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

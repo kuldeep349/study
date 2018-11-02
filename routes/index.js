@@ -57,8 +57,8 @@ app.get('/subject-wise',async function(req, res, next) {
     var education
     //var current_drop = req.session.myclass;
     var current_subs = req.query.id;
-    // var query = 'SELECT * FROM tbl_categories ORDER BY id ASC';
-    // education = await database.query(query, [] );
+     var query = 'SELECT * FROM tbl_categories ORDER BY id ASC';
+     education = await database.query(query, [] );
     var query = 'SELECT * FROM tbl_class ORDER BY id ASC';
     myclass = await database.query(query, [] );
     
@@ -75,7 +75,7 @@ app.get('/subject-wise',async function(req, res, next) {
     }
     var data  = {
        
-        // education:  JSON.parse(education),
+        education:  JSON.parse(education),
         myclass:  JSON.parse(myclass),
         bigclass : bigclass,
         subject: JSON.parse(subject),
