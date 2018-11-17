@@ -13,8 +13,12 @@
 				<nav aria-label="breadcrumb">
 				    <ol class="breadcrumb">
 				      <li class="breadcrumb-item"><a href="/">Home</a></li>
-				      <li class="breadcrumb-item active" aria-current="page">Subject Wise</li>
-				      <li><%= locals.data.current_drop %></li>
+				       <% locals.data.subject.forEach(function(cat){%>
+						      
+					   <% if(locals.data.current_subs == cat.id) { %>
+				      <li class="breadcrumb-item active" aria-current="page"><%= cat.subject_name %></li>
+				      <% } %>
+			      <% }) %>
 				    </ol>
 				</nav>
 			</div>
@@ -26,61 +30,36 @@
 			  	      <% if (locals.data.subject) { %>
 			           <% locals.data.subject.forEach(function(cat){%>
 			      <li class="nav-item">
-				    <a class="nav-link <%= locals.data.current_subs == cat.id ? 'active' : '' %> tabbar_heading" id="tab12" href="subject-wise?id=<%= cat.id %>" role="tab" aria-controls="home"><i class="fas fa-chevron-right"></i><%= cat.subject_name %></a>
+				    <a class="nav-link <%= locals.data.current_subs == cat.id ? 'active' : '' %> tabbar_heading" id="tab12" href="#/" role="tab" data-value="<%= cat.id %>" aria-controls="home"><i class="fas fa-chevron-right"></i><%= cat.subject_name %></a>
 				  </li>
 				  <% }) %>
 			      <% } %>
 
-				<!--   <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab"  id="tab13" href="#link1" role="tab" aria-controls="profile"><i class="fas fa-chevron-right"></i> Physics</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#link2" role="tab" aria-controls="messages"><i class="fas fa-chevron-right"></i> Chemistry</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#link3" role="tab" aria-controls="settings"><i class="fas fa-chevron-right"></i> Mathematics</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#link4" role="tab" aria-controls="settings"><i class="fas fa-chevron-right"></i> Biology</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#link5" role="tab" aria-controls="settings"><i class="fas fa-chevron-right"></i> History</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#link6" role="tab" aria-controls="settings"><i class="fas fa-chevron-right"></i> Accounts</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#link7" role="tab" aria-controls="settings"><i class="fas fa-chevron-right"></i> Business Studies</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#link8" role="tab" aria-controls="settings"><i class="fas fa-chevron-right"></i> English</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#link9" role="tab" aria-controls="settings"><i class="fas fa-chevron-right"></i> Punjabi</a>
-				  </li>
-				  <li class="nav-item">
-				    <a class="nav-link" data-toggle="tab" href="#link10" role="tab" aria-controls="settings"><i class="fas fa-chevron-right"></i> Hindi</a>
-				  </li> -->
+			
 			  </ul>
-			  <!--div class="side_navbar">
-			  	<h5>Other Link</h5>
-			  	<a href=""><i class="fas fa-chevron-right"></i> Sub Heading-1</a>
-			  	<a href=""><i class="fas fa-chevron-right"></i> Sub Heading-2</a>
-			  	<a href=""><i class="fas fa-chevron-right"></i> Sub Heading-3</a>
-			  </div-->
+			  
 			  <div class="filter_bar">
-			  		<% if (locals.data.education) { %>
-			     <% locals.data.education.forEach(function(cat){%>
-			  	<a href="class-wise"><i class="fas fa-chevron-right"></i><%= cat.name %></a>
+		
+				<% if (locals.data.education) { %>
+			   <% locals.data.education.forEach(function(cat){%>	   
+			  		
+			  	<a href="class-wise?id=<%= cat.id %>"><i class="fas fa-chevron-right"></i>Class Wise</a>
 
-			  	<!-- <a href="board-material"><i class="fas fa-chevron-right"></i> Study Material By Board</a>
+                   <% }) %>
+			       <% } %>
+                <% if (locals.data.boards) { %>
+			   <% locals.data.boards.forEach(function(cat){%>
+
+			  	<a href="board-material?id=<%= cat.id %>"><i class="fas fa-chevron-right"></i> Study Material By Board</a>
+                  <% }) %>
+			       <% } %>
+
 			  	<a href="entranc-exam"><i class="fas fa-chevron-right"></i> Extrance Exam Wise</a>
 			  	<a href="#"><i class="fas fa-chevron-right"></i> GOVT. Exam Wise</a>
 			  	<a href="#"><i class="fas fa-chevron-right"></i> UR Interset Wise</a>
 				<a href="#"><i class="fas fa-chevron-right"></i> Engineering Study Material</a>
-				<a href="#"><i class="fas fa-chevron-right"></i> Medical Study Material</a> -->
-				<% }) %>
-                <% } %>
+				<a href="#"><i class="fas fa-chevron-right"></i> Medical Study Material</a>
+				
 			  </div>
 			</div>
 			<div class="col-md-4 col-sm-8 col-xl-9">
@@ -113,10 +92,11 @@
                        	</div>
 					
                            
-					  	<div class="text-center mb-2">
+					  	<div id="owl-demo" class="text-center">
 					  		<div class="form-row" id="current_topic">
 					  			
 							</div>
+						</div>
 						
 					
 				 	<div id="owl-demo" class="text-center">   
@@ -139,7 +119,7 @@
 			                   <% locals.data.topics.forEach(function(cat){%>     
 							<div class="item">
 								<div class="section_box">
-								  <a href="#/" id="myhide"><div class="product_icon"  data-value="<%= cat.id %>">
+								  <a href="#/" id="myhide"><div class="subject_icon"  data-value="<%= cat.id %>">
 									<i class="fas fa-at"></i>
 								  </div><br>
 								  
@@ -148,65 +128,10 @@
 							</div>
 							 <% }) %>
 			                <% } %>
-						<!-- 	<div class="item">
-								<div class="section_box">
-								  <a href=""><div class="product_icon">
-									<i class="fas fa-at"></i>
-								  </div><br>
-								  <h5>X</h5></a>
-								</div>
-							</div>
-							<div class="item">
-								<div class="section_box">
-								  <a href=""><div class="product_icon">
-									<i class="fas fa-at"></i>
-								  </div><br>
-								  <h5>XI</h5></a>
-								</div>
-							</div>
-							<div class="item">
-								<div class="section_box">
-								  <a href=""><div class="product_icon">
-									<i class="fas fa-at"></i>
-								  </div><br>
-								  <h5>XII</h5></a>
-								</div>
-							</div>
-							<div class="item">
-								<div class="section_box">
-								  <a href=""><div class="product_icon">
-									<i class="fas fa-at"></i>
-								  </div><br>
-								  <h5>B.Sc</h5></a>
-								</div>
-							</div>
-							<div class="item">
-								<div class="section_box">
-								  <a href=""><div class="product_icon">
-									<i class="fas fa-at"></i>
-								  </div><br>
-								  <h5>BCA</h5></a>
-								</div>
-							</div>
-							<div class="item">
-								<div class="section_box">
-								  <a href=""><div class="product_icon">
-									<i class="fas fa-at"></i>
-								  </div><br>
-								  <h5>BA</h5></a>
-								</div>
-							</div>	 -->	
+						
 						</div>
                  </div>
-				<!--   <div class="tab-pane" id="link2" role="tabpanel">.3..</div>
-				  <div class="tab-pane" id="link3" role="tabpanel">.4..</div>
-				  <div class="tab-pane" id="link4" role="tabpanel">.5..</div>
-				  <div class="tab-pane" id="link5" role="tabpanel">.6..</div>
-				  <div class="tab-pane" id="link6" role="tabpanel">.7..</div>
-				  <div class="tab-pane" id="link7" role="tabpanel">.8..</div>
-				  <div class="tab-pane" id="link8" role="tabpanel">.9..</div>
-				  <div class="tab-pane" id="link9" role="tabpanel">.10..</div>
-				  <div class="tab-pane" id="link10" role="tabpanel">.11..</div> -->
+				
 				  </div>
 				</div>
 			</div>
@@ -220,49 +145,38 @@
      $('#owl-demo').hide();
     var html = '';
   $.get('selectclass?id='+$(this).val() + '&sid='+$('#myid').data("custom-value"),function(res){
-  	location.reload()
-   // $.each(res,function(key,val){
-   //    html += '<div class="col-md-6 col-sm-6 col-lg-3">';
-   //    html += '<div class="subject_box" >';
-   //    html += '<a href="#/">';
-   //    html += '<div class="subject_icon" data-value =' + val.id + ' >';
-   //    html += '<i class="fas fa-at"></i>';
-   //    html += '</div><br>';
-   //    html += '<h5>'+ val.topic_name + '</h5>';
-   //    html += '</a>';
-   //    html += '</div>';
-   //    html += '</div>';
-   //  })
-   //    $('#current_topic').html(html)
+  	//location.reload()
     
   },'json')
 
 })
-// $(document).on('click','.subject_icon', function(){
-
-//  var html = '';
-//   $.get('selectdesc?id='+$(this).data("value"),function(res){
-//    $.each(res,function(key,val){
+$(document).on('click','.subject_icon', function(){
+$('.section_box').hide();
+ var html = '';
+  $.get('selectdesc?id='+$(this).data("value"),function(res){
+   $.each(res,function(key,val){
      
-//       html += '<h5>'+ val.description + '</h5>';
+      html += '<h5>'+ val.description + '</h5>';
     
     
-//     })
-//       $('#current_topic').html(html)
+    })
+      $('#current_topic').html(html)
     
-//   },'json')
+  },'json')
 	
-// })   
+})   
 
-$(document).on('click','.product_icon', function(){
- $('#owl-demo').hide();
-// alert('k');
+$(document).on('click','.product_icon', function(e){
+ //alert('k');
+// return;
+e.preventDefault()
+ $('#owl-demo').css('display','none');
 var html = '';
-  $.get('selectclass?id='+$(this).data("value") + '&sid='+$('#myid').data("custom-value"),function(res){
+  $.get('selectclass?id='+$(this).data("value") + '&sid='+$(this).data("subject_id"),function(res){
    $.each(res,function(key,val){
       html += '<div class="col-md-6 col-sm-6 col-lg-3">';
       html += '<div class="subject_box" >';
-      html += '<a href="#/">';
+      html += '<a>';
       html += '<div class="subject_icon" data-value =' + val.id + '>';
       html += '<i class="fas fa-at"></i>';
       html += '</div><br>';
@@ -277,37 +191,32 @@ var html = '';
 
 })
 
-// $(document).on('click','#tab12' , function(){
-// $('#owl-demo').hide();
+$(document).on('click','.nav-link' , function(){
+$('#owl-demo').hide();
+$('.nav-link').removeClass('active')
+$(this).addClass('active');
 
-//    var vrifg = $('#data').children("option:selected").val();
-//     if(vrifg!==''){
-//    var html = '';
-//   $.get('selectclass?id='+$('#data').children("option:selected").val() + '&sid='+$('#myid').data("custom-value"),function(res){
-//    $.each(res,function(key,val){
-//       html += '<div class="col-md-6 col-sm-6 col-lg-3">';
-//       html += '<div class="subject_box" >';
-//       html += '<a href="#/">';
-//       html += '<div class="subject_icon">';
-//       html += '<i class="fas fa-at"></i>';
-//       html += '</div><br>';
-//       html += '<h5>'+ val.topic_name + '</h5>';
-//       html += '</a>';
-//       html += '</div>';
-//       html += '</div>';
-//     })
-//       $('#current_topic').html(html)
+ var subject_id = $(this).data("value") 
+   var html = '';
+  $.get('myselect',function(res){
+   $.each(res,function(key,val){
+      html += '<div class="item">';
+      html += '<div class="subject_box" >';
+      html += '<a href="#/">';
+      html += '<div class="product_icon" data-value =' + val.id + ' data-subject_id='+ subject_id +'>';
+      html += '<i class="fas fa-at"></i>';
+      html += '</div><br>';
+      html += '<h5>'+ val.class_name + '</h5>';
+      html += '</a>';
+      html += '</div>';
+      html += '</div>';
+    })
+      $('#current_topic').html(html)
     
-//   },'json')
-// }else{
+  },'json')
 
 
-
-// }
-
-
-
-// })
+})
 
 
 

@@ -37,13 +37,28 @@ app.get('/showpdf', async function(req, res, next) {
 
 
 app.get('/addcontent', async function(req, res, next){
- 
+   
+     var selectclass;
+     var boards;
      var query = 'select * from tbl_class where id in (select class_id from tbl_topic) ORDER BY id ASC';
-            results = await database.query(query, [] );
+      selectclass = await database.query(query, [] );
+      var query = 'select * from tbl_boards ORDER BY id ASC';
+
+      boards = await database.query(query, [] );
+
+        var data = {
+
+          selectclass:  JSON.parse(selectclass),
+          boards:  JSON.parse(boards),
+
+
+
+        }
+           
             
               res.render('admin/content/addcontent', {
                   title: 'Add Subject',
-                  data:JSON.parse(results)
+                  data: data
               })  
     })
   
@@ -77,22 +92,25 @@ app.post('/mycontent', async function(req, res, next){
    if(req.method == "POST"){
       var post  = req.body;
       var cls = post.class_id;
+      var board = post.board_id;
       var subject = post.subject_id;
       var topic = post.topic_id;
       var my_title = post.my_title;
-      var myfile_type = post.filetype;
       var content_wise = post.content_desc
 	 
-       if(content_wise == ''){
-		var file = req.files.pdf;
-		var img_name=file.name;
-
-	  	 if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/gif" ||file.mimetype == "application/pdf"){
+     
+          var file = req.files.pdf;
+         // console.log(file);
+           if(file) {
+	      	var img_name=file.name;
+          //console.log(img_name)
+	     	 if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/gif" ||file.mimetype == "application/pdf"){
                                  
               file.mv('assets/uploads/pdf/'+file.name, async function(err) {
                              
                   
-      		var query = "INSERT INTO `tbl_contents`(`class_id`,`subject_id`,`topic_id`,`file_type`,`content_title`,`file`) VALUES ('" + cls + "','" + subject + "','" + topic + "','" + myfile_type + "','" + my_title + "','" + img_name + "')";
+          var query = "INSERT INTO `tbl_contents`(`board_id`,`class_id`,`subject_id`,`topic_id`,`content_title`,`content_desc`,`file`) VALUES ('" + board + "','" + cls + "','" + subject + "','" + topic + "','" + my_title + "','" + content_wise + "','" + img_name + "')";
+          console.log(query);
             results = await database.query(query, [] );  
     		 if (results) {
               req.flash('success', 'Content added successfully!')
@@ -108,22 +126,24 @@ app.post('/mycontent', async function(req, res, next){
             req.flash('error', "This format is not allowed , please upload file with '.png','.gif','.jpg','.pdf'") 
             res.redirect('/admin/content/addcontent')
           }
-
-       }else{
-
+        }else{
        
-         var query = "INSERT INTO `tbl_contents`(`class_id`,`subject_id`,`topic_id`,`file_type`,`content_title`,`content_desc` ) VALUES ('" + cls + "','" + subject + "','" + topic + "','" + myfile_type + "','" + my_title + "','" + content_wise + "')";
-         results = await database.query(query, [] );
-         
-           if (results) {
-            req.flash('success', 'Content added successfully!')
-            res.redirect('/admin/content/addcontent')
-                        
-            } else {                
-            req.flash('error', err)
-            res.redirect('/admin/content/addcontent')
+          var query = "INSERT INTO `tbl_contents`(`board_id`,`class_id`,`subject_id`,`topic_id`,`content_title`,`content_desc`) VALUES ('" + board + "','" + cls + "','" + subject + "','" + topic + "','" + my_title + "','" + content_wise + "')";
+          console.log(query);
+            results = await database.query(query, [] );  
+    		 if (results) {
+              req.flash('success', 'Content added successfully!')
+              res.redirect('/admin/content/addcontent')
+             } else {                
+             
+                req.flash('error', err)
+                res.redirect('/admin/content/addcontent')
+             }
+
+
+
+
         }
-    }   
    } else {
       res.render('addcontent');
    }

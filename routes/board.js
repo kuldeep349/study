@@ -3,9 +3,9 @@ var app = express()
 const {database} = require('../db.js')
 
 // SHOW LIST OF Boards
-app.get('/board-list', async function(req, res, next) {
+app.get('/exam_list', async function(req, res, next) {
   
-        var query = 'SELECT * FROM tbl_boards ORDER BY id DESC';
+        var query = 'SELECT * FROM tbl_exams ORDER BY id DESC';
         results = await database.query(query, [] );
         res.render('admin/board/boardlist', {
         title: 'Board List',

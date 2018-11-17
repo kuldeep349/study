@@ -7,6 +7,8 @@ var fileUpload = require('express-fileupload')
 var mysql = require('mysql')
 var exp = require('exports')
 var fs = require('fs');
+var session = require('express-session')
+
 
 /**
  * This middleware provides a consistent API
@@ -33,6 +35,7 @@ var dbOptions = {
  * request: Creates new connection per new request. Connection is auto close when response ends.
  */
 app.use(myConnection(mysql, dbOptions, 'pool'))
+
 
 /**
  * setting up the templating view engine
@@ -134,7 +137,7 @@ app.use('/admin/board',board)
 app.use('/admin/topic',fld)
 //app.use('/reb/streams',strm)
 app.use('/admin/subject',sbj)
-//app.use('/reb/exam',exm)
+app.use('/admin/exam',exm)
 app.use('/admin/category',tcr)
 //app.use('/reb/home',home)
 app.use('/site',site)

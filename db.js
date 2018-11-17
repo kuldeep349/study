@@ -3,7 +3,7 @@ var mysql = require('mysql');
 var config = {
     host     : 'localhost',
     user     : 'root',
-    password : 'Password1',
+    password : 'password',
     database : 'education',
     insecureAuth : true
 //    debug: ['ComQueryPacket', 'RowDataPacket']

@@ -4,7 +4,7 @@ const {database} = require('../db.js')
 
 // SHOW ADMIN LOGIN FORM
 app.post('/user_registration', async function(req, res, next){
-	console.log('you are here');
+	//console.log('you are here');
 	req.assert('fname','First Name is required').notEmpty()           //Validate id
     req.assert('email','Email is required').notEmpty()         //Validate class name
     req.assert('phone','Phone is required').notEmpty()

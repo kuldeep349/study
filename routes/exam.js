@@ -1,216 +1,223 @@
 var express = require('express')
 var app = express()
-
+const {database} = require('../db.js')
  
 // SHOW LIST OF classes
-app.get('/', function(req, res, next) {
-    req.getConnection(function(error, conn) {
-        conn.query('SELECT * FROM tests ORDER BY id DESC',function(err, rows, fields) {
+app.get('/exam_list',async function(req, res, next) {
+  
+        var query = 'select * from tbl_exam_type ORDER BY id ASC';
             //if(err) throw err
-            if (err) {
-                req.flash('error', err)
-                res.render('exams/examlist', {
-                    title: 'Exam List', 
-                    data: ''
-                })
-            } else {
-                // render to views/user/list.ejs template file
-                res.render('exams/examlist', {
-                    title: 'Exam List', 
-                    data: rows
-                })
-            }
+            results = await database.query(query, [] );
+            res.render('admin/exam/exam_list', {
+               title: 'Add Exam',
+               data: JSON.parse(results)
+           })
         })
-    })
-})
+  
+
  
-// SHOW ADD Class FORM
-app.get('/addexam', function(req, res, next){    
+// SHOW ADD exam FORM
+app.get('/add_exam',async function(req, res, next){    
     // render to views/user/add.ejs
-    res.render('exams/addexam', {
+    var query = 'select * from tbl_exam_type ORDER BY id ASC';
+    results = await database.query(query, [] );
+     res.render('admin/exam/add_exam', {
         title: 'Add Exam',
-        exam_id:'',
-        exam_name: '',
-        field:'',
-        stream:'',
+        data: JSON.parse(results)
     })
 })
- 
-// ADD NEW Content POST ACTION
-app.post('/addexam', function(req, res, next){    
-    req.assert('exam_id', 'Exam ID is required').notEmpty()           
-    req.assert('exam_name', 'Exam Name is required').notEmpty()
-    req.assert('field', 'Field is required').notEmpty()
-    req.assert('stream', 'Stream is required').notEmpty()           
+// SHOW ADD exam type FORM
+app.get('/add_exam_type',async function(req, res, next){    
+  
+    var query = 'select * from tbl_exam_type ORDER BY id ASC';
+      results = await database.query(query, [] );
+        res.render('admin/exam/add_exam_type', {
+            title: 'Add content',
+            data: JSON.parse(results)
+        }) 
+}) 
+
+app.get('/showexam', async function(req, res, next) {
+    var query = 'SELECT * FROM tbl_exams where exam_type_id = '+req.query.id;
+     results = await database.query(query, [] );
+       // res.writeHead(200, {'Content-Type': 'application/json'});
+        res.send(results);
+
+
+})
+
+// ADD NEW EXAM TYPE POST ACTION
+app.post('/addexamtype',async function(req, res, next){    
+          
+    req.assert('exam_type', 'Exam Type is required').notEmpty()   
+    
     
     var errors = req.validationErrors()
     
-    if( !errors ) {   //No errors were found.  Passed Validation!
-        
-        /********************************************
-         * Express-validator module
-         
-        req.body.comment = 'a <span>comment</span>';
-        req.body.username = '   a user    ';
- 
-        req.sanitize('comment').escape(); // returns 'a &lt;span&gt;comment&lt;/span&gt;'
-        req.sanitize('username').trim(); // returns 'a user'
-        ********************************************/
+    if( !errors ) {   
+
         var exm = {
-            exam_id: req.sanitize('exam_id').escape().trim(),         
-            exam_name: req.sanitize('exam_name').escape().trim(),
-            field: req.sanitize('field').escape().trim(),
-            stream: req.sanitize('stream').escape().trim(),
-            
+                    
+            exam_type: req.sanitize('exam_type').escape().trim(),
+           
         }
         
-        req.getConnection(function(error, conn) {
-            conn.query('INSERT INTO tests SET ?', exm, function(err, result) {
-                //if(err) throw err
-                if (err) {
-                    req.flash('error', err)
-                    
-                    // render to views/user/add.ejs
-                    res.render('exams/addexam', {
-                        title: 'Add Exam',
-                        exam_id:exm.exam_id,
-                        exam_name:exm.exam_name,
-                        field:exm.field,
-                        stream:exm.stream,
-                        })
-                } else {                
-                    req.flash('success', 'Data added successfully!')
-                    
-                    // render to views/user/add.ejs
-                    res.render('exams/addexam', {
-                        title: 'Add Exam',
-                        exam_id:'',
-                        exam_name: '',
-                        field:'',
-                        stream:'',
+         var query = 'INSERT INTO tbl_exam_type SET ?';
+      
+         results = await database.query(query, [exm] );
 
-                         })
-                }
-            })
-        })
-    }
-    else {   //Display errors to user
+         if (results) {
+            req.flash('success', 'Exam Type added successfully!')
+              res.redirect('/admin/exam/add_exam_type')
+            
+        } else {
+
+            req.flash('error','Exam Type Addition failed!')
+            res.render('admin/exam/add_exam_type')
+            
+        }
+
+    } else {   //Display errors to user
         var error_msg = ''
         errors.forEach(function(error) {
             error_msg += error.msg + '<br>'
-        })                
-        req.flash('error', error_msg)        
-        
-        /**
-         * Using req.body.name 
-         * because req.param('name') is deprecated
-         */ 
-        res.render('exams/addexam', { 
-            title: 'Add Exam',
-            exam_id:req.body.exam_id,
-            exam_name: req.body.exam_name,
-            field:req.body.field,
-            stream:req.body.stream,
-            })
+        })
+        req.flash('error', error_msg)
+
+         res.render('admin/exam/add_exam_type', {
+             title: 'Add New Class',
+             class_id: '',
+             class_name:'',
+         })
     }
 })
- 
-// SHOW EDIT USER FORM
-app.get('/editexam/(:id)', function(req, res, next){
-    req.getConnection(function(error, conn) {
-        conn.query('SELECT * FROM tests WHERE id = ' + req.params.id, function(err, rows, fields) {
-            if(err) throw err
-            
-            // if class not found
-            if (rows.length <= 0) {
-                req.flash('error', 'Exam not found with id = ' + req.params.id)
-                res.redirect('/exam')
-            }
-            else { // if class found
-                // render to views/classes/editclass.ejs template file
-                res.render('exams/editexam', {
-                    title: 'Edit Exam', 
-                    //data: rows[0],
-                    id: rows[0].id,
-                    exam_id: rows[0].exam_id,
-                    exam_name: rows[0].exam_name,
-                    field:rows[0].field,
-                    stream: rows[0].stream,
-                    })
-            }            
-        })
-    })
-})
- 
-// EDIT classes POST ACTION
-app.put('/editexam/:id', function(req, res, next) {
-    req.assert('exam_id', 'Exam Id is required').notEmpty()           //Validate name
-    req.assert('exam_name', 'Exam Name is required').notEmpty()
-    req.assert('field', 'Field is required').notEmpty()
-    req.assert('stream','Stream is required').notEmpty()
+
+
+
+// ADD NEW Content POST ACTION
+app.post('/addexam',async function(req, res, next){    
+          
+    req.assert('exam_type', 'Exam Type is required').notEmpty()   
+    req.assert('exam_name', 'Exam Name is required').notEmpty() 
+    req.assert('exam_desc', 'Exam Description is required').notEmpty()    
+    req.assert('eligib_crit', 'Eligibility Criteria is required').notEmpty()
+    req.assert('exam_apply', 'How To Apply is required').notEmpty()
+    req.assert('exam_prep', 'Preparation Tips is required').notEmpty()   
     
     var errors = req.validationErrors()
     
-    if( !errors ) {   //No errors were found.  Passed Validation!
-        
-        /********************************************
-         * Express-validator module
-         
-        req.body.comment = 'a <span>comment</span>';
-        req.body.username = '   a user    ';
- 
-        req.sanitize('comment').escape(); // returns 'a &lt;span&gt;comment&lt;/span&gt;'
-        req.sanitize('username').trim(); // returns 'a user'
-        ********************************************/
+    if( !errors ) {   
+
         var exm = {
-            exam_id: req.sanitize('exam_id').escape().trim(),
-            exam_name: req.sanitize('exam_name').escape().trim(),
-            field: req.sanitize('field').escape().trim(),
-            stream: req.sanitize('stream').escape().trim(),
+            exam_name: req.sanitize('exam_name').escape().trim(),         
+            exam_type_id: req.sanitize('exam_type').escape().trim(),
+            exam_decription: req.sanitize('exam_desc').escape().trim(),
+            eligibility: req.sanitize('eligib_crit').escape().trim(),
+            how_to_apply:  req.sanitize('exam_apply').escape().trim(),
+            exam_preparation: req.sanitize('exam_prep').escape().trim(),
+
+           
+        }
+        
+         var query = 'INSERT INTO tbl_exams SET ?';
+      
+         results = await database.query(query, [exm] );
+
+         if (results) {
+            req.flash('success', 'Exam added successfully!')
+              res.redirect('/admin/exam/add_exam')
+            
+        } else {
+
+            req.flash('error','Exam Addition failed!')
+            res.render('admin/exam/add_exam')
+            
+        }
+
+    } else {   //Display errors to user
+        var error_msg = ''
+        errors.forEach(function(error) {
+            error_msg += error.msg + '<br>'
+        })
+        req.flash('error', error_msg)
+
+         res.render('admin/exam/add_exam', {
+             title: 'Add New Class',
+             class_id: '',
+             class_name:'',
+         })
+    }
+})  
+ 
+// SHOW EDIT USER FORM
+app.get('/examedit',async function(req, res, next){
+    var editexam;
+    var mydata;
+    var query = 'select * from tbl_exam_type ORDER BY id ASC';
+    editexam = await database.query(query, [] );
+    var query = 'select * from tbl_exams WHERE id='+req.query.eid;
+    //console.log(query);
+    mydata = await database.query(query, [] );
+    var id = JSON.parse(mydata);
+   // console.log('sdf');
+    var data  = {
+        mydata : JSON.parse(mydata),
+        editexam : JSON.parse(editexam)
+         
+    }
+    res.render('admin/exam/edit_exam', {
+       title: 'Edit Exam',
+       data: data
+     })
+    })
+   
+
+ 
+// EDIT classes POST ACTION
+app.post('/edit_exams',async function(req, res, next) {
+    //var sbj = { id: req.params.id }
+    req.assert('edit_exam_type', 'Exam Type is required').notEmpty()           //Validate name
+    req.assert('edit_exam_name', 'Exam Name is required').notEmpty()
+    req.assert('edit_exam_desc', 'Exam Description is required').notEmpty()
+    req.assert('edit_eligib_crit','Eligibility Criteria is required').notEmpty()
+    req.assert('edit_exam_apply','How To Apply is required').notEmpty()
+    req.assert('edit_exam_prep','Preparation Tips is required').notEmpty()
+   
+    
+    var errors = req.validationErrors()
+    
+    if( !errors ) {  
+        
+      
+        var exm = {
+            exam_type_id: req.sanitize('edit_exam_type').escape().trim(),
+            exam_name: req.sanitize('edit_exam_name').escape().trim(),
+            exam_decription: req.sanitize('edit_exam_desc').escape().trim(),
+            eligibility: req.sanitize('edit_eligib_crit').escape().trim(),
+            how_to_apply: req.sanitize('edit_exam_apply').escape().trim(),
+            exam_preparation: req.sanitize('edit_exam_prep').escape().trim(),
             
                      
         }
         
-        req.getConnection(function(error, conn) {
-            console.log(req.params);
+       
+           
 
-            conn.query('UPDATE tests SET ? WHERE id = ' + req.params.id, exm, function(err, result) {
-                //if(err) throw err
-                if (err) {
-                    req.flash('error', err)
-                    
-                    // render to views/user/add.ejs
-                    res.render('exams/editexam', {
-                        title: 'Edit Exam',
-                        exam_id: req.body.exam_id,
-                        exam_name: req.body.exam_name,
-                        field:req.body.field,
-                        stream: req.body.stream,
-                        })
-                } else {
-                    req.flash('success', 'Data updated successfully!')
-                    
-                    conn.query('SELECT * FROM tests ORDER BY id DESC',function(err, rows, fields) {
-                        //if(err) throw err
-                        if (err) {
-                            req.flash('error', err)
-                            res.render('exams/examlist', {
-                                title: 'Exam List', 
-                                data: ''
-                            })
-                        } else {
-                            // render to views/user/list.ejs template file
-                            res.render('exams/examlist', {
-                                title: 'Exam List', 
-                                data: rows
-                            })
-                        }
-                    })
-                }
-            })
-        })
-    }
-    else {   //Display errors to user
+             var query = 'UPDATE tbl_exams SET ? WHERE id = ' + req.query.id;
+              results = await database.query(query, [exm] );
+              if (results) {
+                req.flash('success', 'Data Updated successfully!')
+                  res.redirect('/admin/exam/exam_list')
+                
+            } else {
+    
+                req.flash('error','Datas Updation failed!')
+                res.render('admin/exam/exam_list')
+                
+            }
+        
+   
+    }else {   //Display errors to user
         var error_msg = ''
         errors.forEach(function(error) {
             error_msg += error.msg + '<br>'
@@ -232,24 +239,41 @@ app.put('/editexam/:id', function(req, res, next) {
     }
 })
  
+
 // DELETE Class
-app.delete('/delete/(:id)', function(req, res, next) {
-    var exm = { id: req.params.id }
+app.get('/exam_type_delete',async function(req, res, next) {
+    var sbj = { id: req.params.id }
+
     
-    req.getConnection(function(error, conn) {
-        conn.query('DELETE FROM tests WHERE id = ' + req.params.id, exm, function(err, result) {
-            //if(err) throw err
-            if (err) {
-                req.flash('error', err)
-                // redirect to users list page
-                res.redirect('/exam')
+       var query = 'DELETE FROM  tbl_exam_type WHERE id = ' + req.query.id;
+          results = await database.query(query, [sbj] );
+            if ( results) {
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                var obj = {success : 1 , message : 'Exam Type Deleted successfully!!'}
+                  res.end(JSON.stringify(obj));
             } else {
-                req.flash('success', 'User deleted successfully! id = ' + req.params.id)
-                // redirect to users list page
-                res.redirect('/exam')
-            }
-        })
-    })
+                
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                var obj = {success : 0 , message : 'Exam Type Not Deleted!!'}
+                  res.end(JSON.stringify(obj));
+            }   
 })
  
+app.get('/examdelete',async function(req, res, next) {
+    var sbj = { id: req.params.id }
+
+    
+       var query = 'DELETE FROM  tbl_exams WHERE id = ' + req.query.id;
+          results = await database.query(query, [sbj] );
+            if ( results) {
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                var obj = {success : 1 , message : 'Exam Deleted successfully!!'}
+                  res.end(JSON.stringify(obj));
+            } else {
+                
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                var obj = {success : 0 , message : 'Exam Not Deleted!!'}
+                  res.end(JSON.stringify(obj));
+            }   
+})
 module.exports = app

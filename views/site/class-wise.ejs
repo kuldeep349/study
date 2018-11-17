@@ -55,8 +55,18 @@
 			  	<a href=""><i class="fas fa-chevron-right"></i> Sub Heading-3</a>
 			  </div-->
 			  <div class="filter_bar">
-			  	<a href="subject-wise"><i class="fas fa-chevron-right"></i> Subject Wise</a>
-			  	<a href="board-material"><i class="fas fa-chevron-right"></i> Study Material By Board</a>
+                 <% if (locals.data.sub) { %>
+			   <% locals.data.sub.forEach(function(cat){%>	   
+			  	<a href="subject-wise?id=<%= cat.id %>"><i class="fas fa-chevron-right"></i> Subject Wise</a>
+                   <% }) %>
+			       <% } %>
+                 
+                 <% if (locals.data.boards) { %>
+			   <% locals.data.boards.forEach(function(cat){%>
+			  	<a href="board-material?id=<%= cat.id %>"><i class="fas fa-chevron-right"></i> Study Material By Board</a>
+
+                 <% }) %>
+			       <% } %>
 			  	<a href="entranc-exam"><i class="fas fa-chevron-right"></i> Extrance Exam Wise</a>
 			  	
 			  	<a href="#"><i class="fas fa-chevron-right"></i> GOVT. Exam Wise</a>
